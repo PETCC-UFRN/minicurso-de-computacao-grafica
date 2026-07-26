@@ -1,0 +1,58 @@
+# To make the LSP work, also needed to:
+# rm -rf build
+# cmake -B build
+# ln -s build/compile_commands.json .
+
+cmake_minimum_required(VERSION 3.16)
+project(PEinT)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_BUILD_TYPE Debug) # just for gdb
+
+file(GLOB_RECURSE SRC_FILES
+    ${CMAKE_SOURCE_DIR}/src/*.cpp
+    # ${CMAKE_SOURCE_DIR}/src/filters/*.cpp
+    # ${CMAKE_SOURCE_DIR}/src/fills/*.cpp
+    ${CMAKE_SOURCE_DIR}/src/objects/*.cpp
+    ${CMAKE_SOURCE_DIR}/src/backgrounds/*.cpp
+    ${CMAKE_SOURCE_DIR}/src/msg_system/*.cpp
+
+)
+
+set(LIB_SOURCES
+    ${CMAKE_SOURCE_DIR}/lib/lodepng/lodepng.cpp
+    ${CMAKE_SOURCE_DIR}/lib/lodepng/lodepng_util.cpp
+    ${CMAKE_SOURCE_DIR}/lib/tinyxml2/tinyxml2.cpp
+)
+
+add_executable(${PROJECT_NAME}
+    ${SRC_FILES}
+    ${LIB_SOURCES}
+)
+
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/
+    ${CMAKE_SOURCE_DIR}/src/filters/
+    ${CMAKE_SOURCE_DIR}/src/fills/
+    ${CMAKE_SOURCE_DIR}/src/objects/
+    ${CMAKE_SOURCE_DIR}/src/objects/backgrounds/
+    ${CMAKE_SOURCE_DIR}/src/msg_system/
+    ${CMAKE_SOURCE_DIR}/lib
+    ${CMAKE_SOURCE_DIR}/lib/ssmath/
+    ${CMAKE_SOURCE_DIR}/lib/CLI11/
+    ${CMAKE_SOURCE_DIR}/lib/cyCodeBase/
+    ${CMAKE_SOURCE_DIR}/lib/lodepng/
+    ${CMAKE_SOURCE_DIR}/lib/tinyxml2/
+    # ${CMAKE_SOURCE_DIR}/lib/raygui/src/
+    # ${CMAKE_SOURCE_DIR}/lib/raylib/src/
+
+)
+
+
+target_compile_options(${PROJECT_NAME} PRIVATE
+    -Wall -Wextra -Wpedantic -g
+)
