@@ -1,6 +1,7 @@
 #ifndef COMMON_HPP
 #define COMMON_HPP
 
+#include "tinyxml2.h"
 #include <ssmath/ssmath.hpp>
 #include <array>
 #include <cstdio>
@@ -15,6 +16,9 @@ using byte = uint16_t;
 using std::cout;
 using std::endl;
 
+using tinyxml2::XMLDocument;
+using tinyxml2::XML_SUCCESS;
+using tinyxml2::XMLElement;
 using std::array;
 using std::vector;
 using std::string;
@@ -44,29 +48,49 @@ struct RunningOptions {
 };
 
 struct RGBColor {
+  double red;
+  double green;
+  double blue;
 
-  /*
-  atributos...
-  constructors...
-  destructors...
-  */
-
-
-  RGBColor operator+(const double& c) const {return RGBColor(/*TODO*/);}
-  RGBColor operator*(const double& t) const {return RGBColor(/*TODO*/);}
-  RGBColor operator/(const double& t) const {return RGBColor(/*TODO*/);}
-
-  RGBColor operator+(const RGBColor& c) const {return RGBColor(/*TODO*/);}
-  RGBColor operator*(const RGBColor& c) const {return RGBColor(/*TODO*/);}
-  RGBColor operator/(const RGBColor& c) const {return RGBColor(/*TODO*/);}
-
-  bool operator==(const RGBColor& c) const {return /*TODO*/};
-
-  double&    operator[](const size_t index){
-    if(index == 0)return /*TODO*/;
-    if(index == 1)return /*TODO*/;
-    return /*TODO*/;
+  RGBColor() : red(0), green(0), blue(0) {};
+  RGBColor(Vec3 color, std::string color_type){
+     *this = RGBColor(color[0], color[1], color[2], color_type);
   };
+  RGBColor(RGBColor color, std::string color_type){
+     *this = RGBColor(color.red, color.green, color.blue, color_type);
+  };
+  RGBColor(double red, double green, double blue, std::string color_type){
+
+    if(color_type == "rgb"){
+      this->red =  red / 255.0;
+      this->green = green / 255.0;
+      this->blue =  blue / 255.0;
+    }
+    else if (color_type == "spectre"){
+      this->red =   red;
+      this->green = green;
+      this->blue =  blue;
+    }
+  }
+
+  RGBColor(double red, double green, double blue) : red(red), green(green), blue(blue) {};
+  RGBColor operator/(const double& t  )const {return RGBColor(red / static_cast<double>(t), green / static_cast<double>(t), blue / static_cast<double>(t));}
+  RGBColor operator*(const double& t  )const {return RGBColor(red * static_cast<double>(t), green * static_cast<double>(t), blue * static_cast<double>(t));}
+  RGBColor operator*(const RGBColor& c) const{return RGBColor(red * c.red, green * c.green, blue * c.blue);};
+  RGBColor operator+(const RGBColor& c)const {return RGBColor(red + c.red, green + c.green, blue + c.blue);};
+  bool operator==(const RGBColor& c) const {return red == c.red && green == c.green && blue == c.blue;};
+  double&    operator[](const size_t index){
+    if(index == 0)return red;
+    if(index == 1)return green;
+    return blue;
+  };
+
+  double operator[](const size_t index) const {
+    if(index == 0)return red;
+    if(index == 1)return green;
+    return blue;
+  };
+
 
 };
 

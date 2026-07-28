@@ -1,7 +1,7 @@
 /**
  * @file export_img.hpp
  * @brief Implementação das funções que exportam a imagem armazenada em Canvas
- * @author Heitor Campos() 
+ * @author Heitor Campos()
  * @author Arthur Skeete()
  * @author Gabriel Carvalho()
  * @details Esta classe implementa as funções que exportam as imagens armazenadas na classe Canvas para os formatos
@@ -61,7 +61,7 @@ namespace pet {
                 double r = std::clamp(color.red, 0.0, 1.0);
                 double g = std::clamp(color.green, 0.0, 1.0);
                 double b = std::clamp(color.blue, 0.0, 1.0);
-                
+
                 if(gamma_correction){
                 r = apply_gamma(r);
                 g = apply_gamma(g);
@@ -86,7 +86,7 @@ namespace pet {
             }
             return true; // STUB
         }
-        
+
         /**
           * @brief Função que exporta a imagem armazenada em Canvas para o formato PPM3
           * @param filename Nome do arquivo gerado
@@ -110,9 +110,19 @@ namespace pet {
             }
             ofs << "P3\n" << img_width << ' ' << img_height << "\n255\n";
 
-            /*
-            TODO
-            */
+            for (auto &color : buffer) {
+                double r = std::clamp(color.red, 0.0, 1.0);
+                double g = std::clamp(color.green, 0.0, 1.0);
+                double b = std::clamp(color.blue, 0.0, 1.0);
+
+                if(gamma_correction){
+                r = apply_gamma(r);
+                g = apply_gamma(g);
+                b = apply_gamma(b);
+                }
+
+                ofs <<  static_cast<int>(r * 255.0) << ' ' << static_cast<int>(g * 255.0) << ' ' << static_cast<int>(b * 255.0) << '\n';
+            }
 
             ofs.close();
             return true; // STUB
