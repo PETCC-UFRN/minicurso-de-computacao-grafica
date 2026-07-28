@@ -1,16 +1,4 @@
-# Checklist:
-- [ ] Apresentação do repositório do trabalho (parte 2).
-- [x] Criação de classes com herança
-- [x] Criando a classe Object (Polimorfismo)
-- [x] Embasamento matemático de algum algoritmo de desenhar Retas.
-- [x] Criando extensões da classe Object (Line e Circle)
-- [x] Criando polygon e polyline
-- [x] Juntando tudo: nossa primeira cena polimórfica
-- [x] Criar um boneco palito
-- [x] Criar uma casa em um dia de sol
-- [x] Desafio: a classe Ellipse
-
-## Introdução
+# Dia 2
 
 No dia anterior, fomos introduzidos a conceitos básicos como pixels, cores e formatos de arquivos de imagem, como PPM. Hoje iremos começar nosso projeto com o repositório onde vamos construir todas as ferramentas de hoje e dos próximos dias.
 
@@ -133,6 +121,52 @@ class Derivada : public Base {
 ```
 
 Exatamente a sintaxe que usamos anteriormente.
+
+### Callback ao Dia 1
+
+Perceba que se você fez os exercícios do Dia 1, você utilizou esses mesmos conceitos de forma informal. `Background` era uma classe base, `CheckerboardBackground` e `GradientBackground` eram classes derivadas e ambas implementavam `sample()`. Só que, do jeito que declaramos `Background` no Dia 1, isso funcionou meio que por acaso: como não usamos `virtual`, não tínhamos garantia de que uma chamada `sample()` chamaria a versão certa. Faltava dizer ao compilador que esse método deveria ser sobrescrito.
+
+Agora que conhecemos esses conceitos, veja um exemplo de como ficaria a implementação.\
+\
+`antes (Dia 1)`
+```cpp
+class Background {
+	private:
+		RGBColor m_color;
+
+	public:
+		Background(RGBColor color) : m_color(color) {};
+
+		RGBColor sample(double u, double v) const;
+};
+```
+```cpp
+RGBColor CheckerboardBackground::sample(double u, double v) const {
+	/*Código escrito no dia 1*/
+}
+```
+\
+`depois`
+```cpp
+class Background {
+	private:
+		RGBColor m_color;
+
+	public:
+		Background(RGBColor color) : m_color(color) {};
+
+		virtual ~Background() = default; // Vamos guardar Background* apontando para derivadas
+
+		virtual RGBColor sample(double u, double v) const = 0; // Com "= 0" Background vira uma classe abstrata e sample() precisa ser sobrescrito
+};
+```
+```cpp
+RGBColor CheckerboardBackground::sample(double u, double v) const {
+	/*Código escrito no dia 1*/
+}
+```
+
+
 
 Com tudo isso explicado, vamos iniciar nossa primeira classe base, a `Object`.
 
@@ -667,6 +701,19 @@ Agora uma cena que use **todas** as classes do dia:
 - porta e janelas ficam por sua conta (`Polygon`s? `Line`s?);
 - o sol é um `Circle`.
 
+## Checklist:
+- [ ] Apresentação do repositório do trabalho (parte 2).
+- [x] Criação de classes com herança
+- [x] Criando a classe Object (Polimorfismo)
+- [x] Embasamento matemático de algum algoritmo de desenhar Retas.
+- [x] Criando extensões da classe Object (Line e Circle)
+- [x] Criando polygon e polyline
+- [x] Juntando tudo: nossa primeira cena polimórfica
+- [x] Criar um boneco palito
+- [x] Criar uma casa em um dia de sol
+- [x] Desafio: a classe Ellipse
+
 ## Referências
 
 - SHIRLEY, Peter et al. **Fundamentals of Computer Graphics**, third edition.
+
