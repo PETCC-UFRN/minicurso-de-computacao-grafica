@@ -702,7 +702,7 @@ Agora uma cena que use **todas** as classes do dia:
 - o sol é um `Circle`.
 
 ## Checklist:
-- [ ] Apresentação do repositório do trabalho (parte 2).
+- [x] Apresentação do repositório do trabalho (parte 2).
 - [x] Criação de classes com herança
 - [x] Criando a classe Object (Polimorfismo)
 - [x] Embasamento matemático de algum algoritmo de desenhar Retas.
