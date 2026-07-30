@@ -80,12 +80,7 @@ void canvas(XMLElement *elem) {
 
   elem->QueryBoolAttribute("gc", &gc); // gc do canvas
 
-  background = getFill(elem, "background")
-                   .value_or({
-                       1,
-                       1,
-                       1,
-                   });
+  background = getFill(elem, "background").value_or(RGBColor(1, 1, 1));
 }
 
 // --- Object
