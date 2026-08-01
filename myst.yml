@@ -11,5 +11,5 @@ project:
 site:
   template: book-theme
   options:
-  #   favicon: favicon.ico
+    base_url: /minicurso-de-computacao-grafica
     logo: assets/logo.png
