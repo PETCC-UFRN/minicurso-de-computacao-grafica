@@ -34,6 +34,8 @@ jobs:
 
       - name: Build
         run: myst build --html
+        env:
+          BASE_URL: /minicurso-de-computacao-grafica
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
