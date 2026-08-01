@@ -1,0 +1,15 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  id: b2ce2000-895e-47ec-b13d-94a4109104fe
+  title: Minicurso de Computação Gráfica
+  description:
+  # keywords: []
+  authors: [PETCC-UFRN]
+  github: https://github.com/PETCC-UFRN/minicurso-computacao-grafica
+  # To autogenerate a Table of Contents, run "jupyter book init --write-toc"
+site:
+  template: book-theme
+  options:
+  #   favicon: favicon.ico
+    logo: assets/logo.png

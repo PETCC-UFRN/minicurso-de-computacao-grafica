@@ -1,0 +1,9 @@
+build/
+compile_commands.json
+.cache/
+*.ppm
+.vscode/
+
+# MyST build outputs
+_build
+.venv/
