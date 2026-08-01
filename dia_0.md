@@ -159,4 +159,4 @@ Computação Gráfica envolve bastante **matemática**, **programação** e **ex
 
 Esperamos que este minicurso desperte sua curiosidade pela área e mostre que, por trás de **cada imagem exibida na tela**, existe uma enorme quantidade de **matemática**, **algoritmos** e **engenharia**.
 
-# **Vamos começar! **
+# **Vamos começar!**
