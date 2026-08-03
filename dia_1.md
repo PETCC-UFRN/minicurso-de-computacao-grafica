@@ -25,7 +25,7 @@ Uma tela, ou quadro branco, é um objeto no mundo real que possui uma superficie
 
 <!-- Foto de um quadro branco dividido com uma matriz-->
 
-Agora que temos uma idéia básica de como abstrair um quadro, precisamos pensar na cor. No mundo real, a percepção que temos de cor é apenas uma experiência sensorial gerada quando feixes de fótons interagem com as células da nossa retina. Cores diferentes, são apenas feixes de fótons com frequências diferentes, esses feixes de fótons só são visíveis, porém, em um determinado intervalor, chamado espectro de luz visível:
+Agora que temos uma idéia básica de como abstrair um quadro, precisamos pensar na cor. No mundo real, a percepção que temos de cor é apenas uma experiência sensorial gerada quando feixes de fótons interagem com as células da nossa retina. Cores diferentes, são apenas feixes de fótons com frequências diferentes, esses feixes de fótons só são visíveis, porém, em um determinado intervalo, chamado espectro de luz visível:
 
 <!-- Espectro de luz visível -->
 
@@ -48,7 +48,7 @@ Agora que entendemos o que queremos abstrair e temos uma ideia básica de como f
 Ao longo desse minicurso, estaremos utilizando um projeto que servirá como base para a implementação dos conceitos que vimos até então e que veremos futuramente. Para isso, preparamos um repositório no GitHub com a base do projeto já preestabelecida pronta para ser expandida com base nos conhecimentos que obteremos ao longo desses 5 dias!
 
 <!-- Link do GitHub -->
-[Aqui esta o repositório com a base do nosso projeto!](https://github.com/PETCC-UFRN/minicurso-computacao-grafica/tree/base-dia1)
+[Aqui esta o repositório com a base do nosso projeto!](https://github.com/PETCC-UFRN/minicurso-de-computacao-grafica/tree/Dia1)
 
 ### Cores no Computador (RGB)
 
@@ -58,38 +58,38 @@ Nesse projeto, vamos fazer algumas mudanças nisso, transformaremos o intervalo 
 
 #### Implementando a classe RGBColor
 
-Como a Struct RGBColor que criaremos será utilizada por, basicamente, todas as partes do projeto, a criaremos num arquivo  chamado`common.hpp` na raiz do `src` nosso projeto.
+Como a Struct RGBColor que criaremos será utilizada por, basicamente, todas as partes do projeto, a criaremos num arquivo  chamado `common.hpp` na raiz do `src` nosso projeto.
 
 ```cpp
 struct RGBColor {
 
-/*
-atributos...
-constructors...
-destructors...
-*/
+	/*
+	atributos...
+	constructors...
+	destructors...
+	*/
 
-/*Operações entre cores RGB*/
+	/*Operações entre cores RGB*/
 
-RGBColor operator+(const double& c) const {return RGBColor(/*TODO*/);}
-RGBColor operator*(const double& t) const {return RGBColor(/*TODO*/);}
-RGBColor operator/(const double& t) const {return RGBColor(/*TODO*/);}
+	RGBColor operator+(const double& c) const {return RGBColor(/*TODO*/);}
+	RGBColor operator*(const double& t) const {return RGBColor(/*TODO*/);}
+	RGBColor operator/(const double& t) const {return RGBColor(/*TODO*/);}
 
-RGBColor operator+(const RGBColor& c) const {return RGBColor(/*TODO*/);}
-RGBColor operator*(const RGBColor& c) const {return RGBColor(/*TODO*/);}
-RGBColor operator/(const RGBColor& c) const {return RGBColor(/*TODO*/);}
+	RGBColor operator+(const RGBColor& c) const {return RGBColor(/*TODO*/);}
+	RGBColor operator*(const RGBColor& c) const {return RGBColor(/*TODO*/);}
+	RGBColor operator/(const RGBColor& c) const {return RGBColor(/*TODO*/);}
 
-bool operator==(const RGBColor& c) const {return /*TODO*/};
+	bool operator==(const RGBColor& c) const {return /*TODO*/};
 
-double&    operator[](const size_t index){
-if(index == 0)return /*TODO*/;
-if(index == 1)return /*TODO*/;
-return /*TODO*/;
-};
+	double&    operator[](const size_t index){
+		if(index == 0)return /*TODO*/;
+		if(index == 1)return /*TODO*/;
+		return /*TODO*/;
+	};
 }
 ```
 
-<!-- Aqui, cabe no material principal uma pequena seção para explicar o que é um Pixel -->
+<!-- Aqui, cabe no material principal uma pequena seção para explicar o que é um Pixel -->1
 ### Representando uma Imagem com Cores (PPM)
 
 Agora que sabemos como representar uma cor, precisamos de uma maneira de utilizá-la para representar uma imagem. Uma maneira possível (e a que iremos utilizar ao longo do curso) é utilizando o formato de imagem PPM (Portable Pixmap Format). O formato PPM trata a imagem como uma matriz ou um "grid", em que cada pixel da imagem é uma posição nessa matriz. Chamamos de PPM3 quando utilizamos RGB no formato PPM.
@@ -101,6 +101,7 @@ Uma imagem no formato PPM3 é apenas um arquivo de texto com a extensão `.ppm`,
 ```text
 P3           # Indica que é uma imagem com cores em RGB em ASCII
 3 2          # Indica largura e altura da imagem em pixels
+255 		 # Indica o valor máximo do PPM
 # Tudo abaixo disso é o corpo da imagem
 255   0   0  # vermelho
   0 255   0  # verde
@@ -215,7 +216,7 @@ class Background {
 Agora, precisamos apenas implementar a função `sample` no nosso `.cpp`:
 
 ```cpp
-RGBColor Background::sample(double, double) const {
+RGBColor Background::sample(double u, double v) const {
 /*TODO*/
 }
 ```
@@ -230,7 +231,7 @@ Para fazer isso será necessário:
 
 1. Iniciar um canvas com 40 de largura e 40 e altura
 2. Iniciar um background com a cor magenta
-3. Exportar a imagem para PPM, se atentando ao cabeçalho e a divisão de pixels
+3. Exportar a imagem para PPM, se atentando ao cabeçalho e à divisão de pixels
 
 
 ### Exercícios
