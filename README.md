@@ -300,7 +300,7 @@ void Line::drawObject(Canvas &canvas, RGBColor color, DrawMethod method) {
 
 Relembrando o caso anterior, o `dx` e `dy` podem ser vistos como:
 
-![Dx Dy](imagens/dydx.png "Variações em ambos os eixos")
+![Dx Dy](images/dydx.png "Variações em ambos os eixos")
 
 
 
