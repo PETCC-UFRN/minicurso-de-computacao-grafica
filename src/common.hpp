@@ -70,15 +70,23 @@ struct RGBColor {
 
 };
 
-// @author = Sam Altman's child
-// ===
+
 inline std::istream& operator>>(std::istream& is, pet::RGBColor& color) {
-    return is >> color.red >> color.green >> color.blue;
+    /*TODO*/
+    /*Essa função serve para executar coisas como
+      
+      cin >> color;
+    
+    sem precisar preencher cada campo individualmente*/
 }
 inline std::ostream& operator<<(std::ostream& os, const pet::RGBColor& color) {
-    return os << color.red << " " << color.green << " " << color.blue;
+    /*TODO*/
+    /*Essa função serve para executar coisas como
+      
+      cout << color;
+    
+    sem precisar printar cada canal de cor individualmente*/
 }
-// ===
 
 } // namespace rt
 

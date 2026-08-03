@@ -58,9 +58,9 @@ namespace pet {
             img.reserve(img_width * img_height * 4);
 
             for (auto &color : buffer) {
-                double r = std::clamp(color.red, 0.0, 1.0);
-                double g = std::clamp(color.green, 0.0, 1.0);
-                double b = std::clamp(color.blue, 0.0, 1.0);
+                double r = std::clamp(color./*TODO*/, 0.0, 1.0);
+                double g = std::clamp(color./*TODO*/, 0.0, 1.0);
+                double b = std::clamp(color./*TODO*/, 0.0, 1.0);
                 
                 if(gamma_correction){
                 r = apply_gamma(r);
