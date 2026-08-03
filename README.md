@@ -316,7 +316,6 @@ Ela é importante para definir instâncias de `Line` que crescem em qualquer sen
  - O passo (stepX e stepY): Uma variação não negativa em um eixo define que estamos aumentando os valores (passo +1), enquanto uma variação negativa indica que estamos diminuindo (passo -1).
  - As variações (dx e dy): Definem a distância absoluta que o ponto start precisa percorrer até chegar em end.
 
-```cpp
 #### `DrawMethod::Bresenhan`
 
 Usaremos como forma padrão o `DrawMethod::Bresenhan`. Este método é famoso por usar apenas aritmética inteira, evitando números de ponto flutuante e divisões, o que o torna extremamente rápido. Sua implementação pode ser divida como:
