@@ -2,13 +2,13 @@
 
 No dia anterior, fomos introduzidos a conceitos básicos como pixels, cores e formatos de arquivos de imagem, como PPM. Hoje iremos começar nosso projeto com o repositório onde vamos construir todas as ferramentas de hoje e dos próximos dias.
 
-## Repositório dia 2:
+## Repositório do dia 2
 
 O repositório do dia 2 contém tudo do dia 1 somando novas classes que iremos implementar. Dessa forma, temos no repositório atual novas classes como `Circle`, `Line`, `Object`, `Polyline` e `Polygon`.
 
 Além dessas, temos uma classe `Parser` para nos fornecer uma outra forma de gerar imagens, por meio de arquivo de cenas. A estrutura de um arquivo é a seguinte:
 
-```
+```xml
 <PEinT>
   <canvas filename="filename.extension" size="width height" />
   ...
@@ -16,7 +16,8 @@ Além dessas, temos uma classe `Parser` para nos fornecer uma outra forma de ger
 ```
 
 E para criar linhas, círculos e polígonos podemos usar:
-```
+
+```xml
 <line start="x1 y1" end="x2 y2" />
 <circle radius="radius" center="x y"/>
 <polygon points="x1 y1 ... xn yn"/>
@@ -24,7 +25,7 @@ E para criar linhas, círculos e polígonos podemos usar:
 
 Dessa maneira, aqui temos um arquivo de cena com essas três formas:
 
-```
+```xml
 <PEinT>
   <canvas filename="result.png" size="800 400" />
 
@@ -38,6 +39,7 @@ Dessa maneira, aqui temos um arquivo de cena com essas três formas:
 ```
 
 Sinta-se a vontade para conhecer nossos novos arquivos!
+
 ## Herança em C++
 
 Antes de continuar, vamos estudar um conceito importante que utilizaremos ao longo do minicurso, o conceito de herança.
@@ -46,7 +48,7 @@ Linguagens orientadas a objetos implementam herança para permitir uma classe re
 
 Para nós, esse mecanismo é essencial por oferecer uma interface comum para cada tipo de objeto em nosso rasterizador. A seguir, vamos entender melhor esse mecanismo.
 
-### Como definir uma herança:
+### Como definir uma herança
 
 A relação de herança define uma relação do tipo **é um**. Suponha que tenhamos a seguinte classe:
 
@@ -64,13 +66,13 @@ class Papagaio : private Animal {};   // membros public e protected de Animal vi
 
 Note que, nos três casos temos que cada classe **é um** `Animal`. Na prática, usaremos herança da primeira forma, com formato `class Derived : public Base {};`.
 
-### Virtual e override:
+### Virtual e override
 
-Com o mecanismo de herança implementado, algumas funcionalidades podem ser usadas. Neste minicurso, focaremos em `Virtual` e `Override`.
+Com o mecanismo de herança implementado, algumas funcionalidades podem ser usadas. Neste minicurso, focaremos em `virtual` e `override`.
 
-#### `Virtual`
+#### `virtual`
 
-A palavra-chave `Virtual` define funções que podem ou não ser sobrescritas, dependendo apenas da classe ser abstrata ou não. Uma classe abstrata é uma classe que não pode ser instanciada e que possui algum método da forma:
+A palavra-chave `virtual` define funções que podem ou não ser sobrescritas, dependendo apenas da classe ser abstrata ou não. Uma classe abstrata é uma classe que não pode ser instanciada e que possui algum método da forma:
 
 ```cpp
 virtual returnType funcName() = 0;
@@ -105,14 +107,14 @@ class Papagaio : public Animal {
 Outra maneira de definir métodos virtuais são métodos que podem opcionalmente ser derivados. A sintaxe é semelhante, apenas retirando o uso de `= 0;`. Por exemplo, suponha que nossa classe `Animal` quer permitir, mas não obrigar, que o método `falar()` seja sobrescrito. Basta definir como:
 
 ```cpp
-  virtual void falar();
+virtual void falar();
 ```
 
 Dessa forma, qualquer classe derivada pode ou não sobrescrever esse método. Mas, supondo que queremos (ou precisamos) sobrescrever um método, como implementar?
 
-#### `Override`
+#### `override`
 
-A palavra `Override` define métodos que, após definidos em uma classe base, estão sendo implementados em uma classe derivada. Ela previne que, em tempo de desenvolvimento, cometamos alguns erros como sobrescrever um método que esquecemos de definir. Por exemplo, suponha que uma classe base definiu um método que deve ser sobrescrito. Podemos fazer:
+A palavra `override` define métodos que, após definidos em uma classe base, estão sendo implementados em uma classe derivada. Ela previne que, em tempo de desenvolvimento, cometamos alguns erros como sobrescrever um método que esquecemos de definir. Por exemplo, suponha que uma classe base definiu um método que deve ser sobrescrito. Podemos fazer:
 
 ```cpp
 class Derivada : public Base {
@@ -126,9 +128,10 @@ Exatamente a sintaxe que usamos anteriormente.
 
 Perceba que se você fez os exercícios do Dia 1, você utilizou esses mesmos conceitos de forma informal. `Background` era uma classe base, `CheckerboardBackground` e `GradientBackground` eram classes derivadas e ambas implementavam `sample()`. Só que, do jeito que declaramos `Background` no Dia 1, isso funcionou meio que por acaso: como não usamos `virtual`, não tínhamos garantia de que uma chamada `sample()` chamaria a versão certa. Faltava dizer ao compilador que esse método deveria ser sobrescrito.
 
-Agora que conhecemos esses conceitos, veja um exemplo de como ficaria a implementação.\
-\
-`antes (Dia 1)`
+Agora que conhecemos esses conceitos, veja um exemplo de como ficaria a implementação.
+
+**Antes (Dia 1):**
+
 ```cpp
 class Background {
 	private:
@@ -140,13 +143,15 @@ class Background {
 		RGBColor sample(double u, double v) const;
 };
 ```
+
 ```cpp
 RGBColor CheckerboardBackground::sample(double u, double v) const {
 	/*Código escrito no dia 1*/
 }
 ```
-\
-`depois`
+
+**Depois:**
+
 ```cpp
 class Background {
 	private:
@@ -160,52 +165,50 @@ class Background {
 		virtual RGBColor sample(double u, double v) const = 0; // Com "= 0" Background vira uma classe abstrata e sample() precisa ser sobrescrito
 };
 ```
+
 ```cpp
 RGBColor CheckerboardBackground::sample(double u, double v) const {
 	/*Código escrito no dia 1*/
 }
 ```
 
-
-
 Com tudo isso explicado, vamos iniciar nossa primeira classe base, a `Object`.
 
-## Criando a classe `Object`:
+## Criando a classe `Object`
 
 Para iniciar nosso projeto, precisamos de uma interface comum a todos nossos objetos, ou formas. Para isso vamos usar a classe `Object`:
 
 ```cpp
-    enum class DrawMethod {
-      Bresenhan = 0,
-      BresenhanMidpoint,
-    };
+enum class DrawMethod {
+    Bresenhan = 0,
+    BresenhanMidpoint,
+};
 
-    class Object {
-        protected:
-            Point2 scale; //> Escala dos valores x e y do objeto
-            double thick; //> Grossura das linhas do objeto que será desenhado
-        public:
+class Object {
+    protected:
+        Point2 scale; //> Escala dos valores x e y do objeto
+        double thick; //> Grossura das linhas do objeto que será desenhado
+    public:
 
-              /**
-              * @brief Construtor parametrizado
-              * @param scale Escalas x e y do objeto.
-              * @param thick Grossura do objeto
-              *
-              */
-            Object(Point2 scale = Point2(1, 1), double thick = 1) : scale(scale), thick(thick) {};
+        /**
+          * @brief Construtor parametrizado
+          * @param scale Escalas x e y do objeto.
+          * @param thick Grossura do objeto
+          */
+        Object(Point2 scale = Point2(1, 1), double thick = 1) : scale(scale), thick(thick) {};
 
-              /**
-              * @brief Destrutor Padrão
-              */
-            virtual ~Object() = default;
+        /**
+          * @brief Destrutor Padrão
+          */
+        virtual ~Object() = default;
 
-              /**
-              * @brief Função que desenha o objeto no Canvas
-              * @param canvas Tela que será desenhada.
-              * @param color Cor do objeto.
-              */
-            virtual void drawObject(Canvas& canvas, RGBColor color, DrawMethod method = DrawMethod::Bresenhan) = 0;
-    };
+        /**
+          * @brief Função que desenha o objeto no Canvas
+          * @param canvas Tela que será desenhada.
+          * @param color Cor do objeto.
+          */
+        virtual void drawObject(Canvas& canvas, RGBColor color, DrawMethod method = DrawMethod::Bresenhan) = 0;
+};
 ```
 
 Essa classe vive em `src/objects/object.hpp` e será a **base** de todas as formas que desenharemos. Todos os headers do projeto seguem o mesmo padrão: include guards — `#ifndef`/`#define`/`#endif` — e o namespace `pet`.
@@ -238,9 +241,11 @@ Hoje vamos nos concentrar nos dois primeiros, que são duas formas do mesmo algo
 Uma reta é um objeto contínuo, mas nossa tela é uma matriz de pixels em posições inteiras. **Rasterizar** uma reta é escolher, entre esses pixels, quais melhor aproximam a reta ideal que vai de `(x0, y0)` até `(x1, y1)`.
 
 Dessa forma, suponha que queremos desenhar uma reta entre `P0` e `P1`:
+
 ![P0 and P1](images/p0_and_p1.png "P0 e P1")
 
 Uma boa solução pode ser:
+
 ![Line from P0 to P1](images/p0_to_p1_line.png "Linha de P0 a P1")
 
 Mas como desenhá-la?
@@ -277,95 +282,102 @@ class Line : public Object {
 
 Repare como os conceitos do começo do dia aparecem aqui: `Line` **é um** `Object`, então herda `scale` e `thick`, repassa-os ao construtor da base e é obrigada (pelo `= 0` da base) a implementar `drawObject`. O `override` garante, em tempo de compilação, que estamos de fato sobrescrevendo o método certo.
 
-#### Implementando o `drawObject` (`src/objects/line.cpp`)
+### Implementando o `drawObject` (`src/objects/line.cpp`)
 
 O nosso `drawObject` pode ser dividido em apenas três etapas, a preparação geral e comum a ambos os métodos de desenhos e o método propriamente dito. Dessa maneira, podemos estruturá-lo como:
 
 ```cpp
-
 void Line::drawObject(Canvas &canvas, RGBColor color, DrawMethod method) {
 
-  // [1] Preparação comum a ambos os métodos.
+  // [1] - Preparação comum a ambos os métodos.
 
-        switch (method) {
+  switch (method) {
 
-            // [2] - Bresenhan
-            case DrawMethod::Bresenhan: {
-            /* TODO */
-            }
+    // [2] - Bresenhan
+    case DrawMethod::Bresenhan: {
+      /* TODO */
+      break;
+    }
 
-            // [3] - BresenhanMidpoint
-            case DrawMethod::BresenhanMidpoint: {
-            /* TODO */
-            }
-
-        }
+    // [3] - BresenhanMidpoint
+    case DrawMethod::BresenhanMidpoint: {
+      /* TODO */
+      break;
+    }
+  }
 }
 ```
 
+#### Preparação comum aos métodos de desenho
 
-#### Preparação comum aos métodos de desenhos:
 A preparação geral serve para nos mostrar o diferencial em ambos os eixos:
+
 ![Dx Dy](images/dydx.png "Variações em ambos os eixos")
 
 E em sentido de qual octante estaremos indo:
+
 ![octantes](images/octantes.png "Octantes em um plano cartesiano.")
 
 Ela é importante para definir instâncias de `Line` que crescem em qualquer sentido no plano. Resumindo:
 
- - O passo (stepX e stepY): Uma variação não negativa em um eixo define que estamos aumentando os valores (passo +1), enquanto uma variação negativa indica que estamos diminuindo (passo -1).
- - As variações (dx e dy): Definem a distância absoluta que o ponto start precisa percorrer até chegar em end.
+- **O passo (`stepX` e `stepY`):** uma variação não negativa em um eixo define que estamos aumentando os valores (passo `+1`), enquanto uma variação negativa indica que estamos diminuindo (passo `-1`).
+- **As variações (`dx` e `dy`):** definem a distância absoluta que o ponto `start` precisa percorrer até chegar em `end`.
 
 #### `DrawMethod::Bresenhan`
 
-Usaremos como forma padrão o `DrawMethod::Bresenhan`. Este método é famoso por usar apenas aritmética inteira, evitando números de ponto flutuante e divisões, o que o torna extremamente rápido. Sua implementação pode ser divida como:
+Usaremos como forma padrão o `DrawMethod::Bresenhan`. Este método é famoso por usar apenas aritmética inteira, evitando números de ponto flutuante e divisões, o que o torna extremamente rápido. Sua implementação pode ser dividida como:
 
 ```cpp
 case DrawMethod::Bresenhan: {
+
     // [1] - Módulo de dx e dy, mas dy negado ao final.
+    /* TODO */
 
     canvas.add(Pixel(x, y), color);
-    int d = dx + dy; //>  o "erro"
+    int d = dx + dy;              //> o "erro"
 
     while (x != end.x() || y != end.y()) {
+
         int d2 = 2 * d;
 
         // [2] - Avanço em X
-
+        /* TODO */
 
         // [3] - Avanço em Y
+        /* TODO */
 
         canvas.add(Pixel(x, y), color);
     }
+
     break;
 }
 ```
 
-##### O que são as variáveis d e d2?
+##### O que são as variáveis `d` e `d2`?
 
 Imagine que você está desenhando uma reta em um caderno quadriculado. A linha matemática perfeita muitas vezes vai passar bem no meio dos quadradinhos, mas você só pode pintar o quadradinho inteiro (que representa o nosso pixel na tela).
 
-Como o computador decide qual quadradinho pintar? É aí que entram as variáveis d e d2:
+Como o computador decide qual quadradinho pintar? É aí que entram as variáveis `d` e `d2`:
 
- - A variável d (o erro Acumulado):
-A variável d funciona como um "medidor de distância" ou "medidor de erro". Ela calcula o quão distante o nosso pixel atual está da linha matemática ideal. Conforme vamos pintando a tela, esse erro vai acumulando. Se a distância pender muito para um eixo, o algoritmo entende que é hora de "dar um passo" e mudar a coordenada do pixel para compensar, mantendo o desenho o mais fiel possível à reta perfeita.
+- **A variável `d` (o erro acumulado):**
+  a variável `d` funciona como um "medidor de distância" ou "medidor de erro". Ela calcula o quão distante o nosso pixel atual está da linha matemática ideal. Conforme vamos pintando a tela, esse erro vai acumulando. Se a distância pender muito para um eixo, o algoritmo entende que é hora de "dar um passo" e mudar a coordenada do pixel para compensar, mantendo o desenho o mais fiel possível à reta perfeita.
 
- - A variável d2 (a otimização):
-Na teoria geométrica, o momento exato de dar esse passo e compensar a rota é quando o erro passa da metade de um pixel (ou seja, quando o erro é maior que 0.5). O grande problema computacional é que processadores gastam muito mais tempo e energia lidando com números decimais (variáveis do tipo float) do que com números inteiros (int).
+- **A variável `d2` (a otimização):**
+  na teoria geométrica, o momento exato de dar esse passo e compensar a rota é quando o erro passa da metade de um pixel (ou seja, quando o erro é maior que `0.5`). O grande problema computacional é que processadores gastam muito mais tempo e energia lidando com números decimais (variáveis do tipo `float`) do que com números inteiros (`int`).
 
-Para resolver isso e fazer o algoritmo rodar de forma extremamente rápida, o algoritmo multiplica essa regra por 2. Quando dobramos tudo, o limite que era 0.5 vira 1, e o nosso erro `d` passa a ser calculado como `d2`  (d2 = 2 * d).
+Para resolver isso e fazer o algoritmo rodar de forma extremamente rápida, o algoritmo multiplica essa regra por 2. Quando dobramos tudo, o limite que era `0.5` vira `1`, e o nosso erro `d` passa a ser calculado como `d2` (`d2 = 2 * d`).
 
 ##### Como avançar em X e Y?
 
 Dentro do seu laço de repetição, você precisará decidir quando o pixel deve andar para o lado, quando deve andar para cima/baixo, ou quando deve fazer os dois ao mesmo tempo (diagonal).
 
-Para isso, você usará o seu erro dobrado (d2) e fará duas verificações independentes:
+Para isso, você usará o seu erro dobrado (`d2`) e fará duas verificações independentes:
 
-1. A regra para o avanço Horizontal (Eixo X):
-Verifique se a nossa balança pendulou para o lado: o valor de d2 é maior ou igual ao nosso limite negativo dy?
+1. **A regra para o avanço horizontal (eixo X):**
+   verifique se a nossa balança pendulou para o lado: o valor de `d2` é maior ou igual ao nosso limite negativo `dy`?
 
-2. A regra para o avanço Vertical (Eixo Y):
-Verifique se a balança pendulou para o outro limite: o valor de d2 é menor ou igual ao limite positivo dx?
+2. **A regra para o avanço vertical (eixo Y):**
+   verifique se a balança pendulou para o outro limite: o valor de `d2` é menor ou igual ao limite positivo `dx`?
 
 ##### O algoritmo em passos
 
@@ -389,16 +401,18 @@ Tente implementar por você mesmo. Caso tenha dificuldade, tente seguir os passo
 
 7. **Verifique se `d2` é maior ou igual a `dy`.**
    Se for, faça duas coisas:
-   - ande um passo em x, somando `stepX` ao `x`;
-   - some `dy` ao `d`. Como `dy` é negativo, isso **diminui** o erro.
+
+    - ande um passo em x, somando `stepX` ao `x`;
+    - some `dy` ao `d`. Como `dy` é negativo, isso **diminui** o erro.
 
    Se não for, não faça nada, o x fica onde está nesta volta.
 
 8. **Verifique se `d2` é menor ou igual a `dx`.**
    **Atenção:** use o `d2` que você anotou no passo 6, e não recalcule o dobro de `d` — porque o passo 7 pode ter acabado de mexer no `d`.
    Se for, faça duas coisas:
-   - ande um passo em y, somando `stepY` ao `y`;
-   - some `dx` ao `d`. Como `dx` é positivo, isso **aumenta** o erro.
+
+    - ande um passo em y, somando `stepY` ao `y`;
+    - some `dx` ao `d`. Como `dx` é positivo, isso **aumenta** o erro.
 
    Se não for, o y fica onde está nesta volta.
 
@@ -440,7 +454,7 @@ Reta de `(0,0)` até `(10,4)`. Depois da preparação: `stepX = 1`, `stepY = 1`,
 
 E assim por diante, até `x` e `y` baterem em `(10, 4)`.
 
-#### `DrawMethod::BresenhanMidPoint`
+#### `DrawMethod::BresenhanMidpoint`
 
 O método do Ponto Médio (Midpoint) resolve o mesmo problema de rasterização, mas sob uma perspectiva matemática diferente. Em vez de medir o erro acumulado nos eixos independentemente, ele foca na equação implícita da reta e avalia o ponto exato no meio de dois pixels candidatos para decidir qual deles está mais perto da reta real.
 
@@ -509,11 +523,11 @@ case DrawMethod::BresenhanMidpoint: {
 }
 ```
 
-##### Por que dividir em duas condições ?
+##### Por que dividir em duas condições?
 
 Diferente do Bresenham generalizado que resolve tudo em um único laço, o algoritmo do Ponto Médio exige saber qual eixo é o "dominante" (qual tem a maior variação).
 
-Se uma reta é mais horizontal (dy <= dx), sabemos que para cada pixel avançado em X, avançaremos no máximo um pixel em Y. Se tentássemos usar X como base para uma reta muito vertical, acabaríamos desenhando pixels muito espaçados em Y, criando uma linha pontilhada cheia de buracos. Portanto, dividimos a lógica: andamos 1 pixel de cada vez no eixo dominante, e usamos a variável de decisão para saber se precisamos mover o eixo secundário.
+Se uma reta é mais horizontal (`dy <= dx`), sabemos que para cada pixel avançado em X, avançaremos no máximo um pixel em Y. Se tentássemos usar X como base para uma reta muito vertical, acabaríamos desenhando pixels muito espaçados em Y, criando uma linha pontilhada cheia de buracos. Portanto, dividimos a lógica: andamos 1 pixel de cada vez no eixo dominante, e usamos a variável de decisão para saber se precisamos mover o eixo secundário.
 
 ##### A variável de decisão `d`
 
@@ -644,7 +658,7 @@ class Circle : public Object {
 };
 ```
 
-#### Implementando o `drawObject` (`src/objects/circle.cpp`)
+### Implementando o `drawObject` (`src/objects/circle.cpp`)
 
 A estratégia é a mesma da reta: um erro inteiro, atualizado por soma, decidindo a cada volta qual pixel pintar. Muda só a função que descreve a curva — e ganhamos um bônus que a reta não tinha.
 
@@ -682,8 +696,7 @@ void Circle::drawObject(Canvas& canvas, RGBColor color, DrawMethod) {
 }
 ```
 
-
-##### O que são as variáveis `x`, `y` e `d`?
+#### O que são as variáveis `x`, `y` e `d`?
 
 `x` e `y` **não são a posição na tela**. Eles são a posição relativa ao centro, dentro de um único octante. A posição real só aparece no `[2]`, quando somamos o centro.
 
@@ -704,7 +717,7 @@ Assim como na reta, nunca calculamos `F` do zero. Guardamos o valor em `d` e vam
 
 E o valor inicial é `d = 1 - r`. Ele vem de avaliar `F` no primeiro ponto médio, que dá `5/4 - r` — a fração `1/4` é descartada porque todas as atualizações são inteiras e ela nunca chega a mudar o resultado de uma comparação com zero.
 
-##### Por que basta calcular um oitavo?
+#### Por que basta calcular um oitavo?
 
 A circunferência é simétrica em oito direções: se `(x, y)` pertence a ela, então `(±x, ±y)` e `(±y, ±x)` também pertencem.
 
@@ -719,7 +732,7 @@ Os dois `for` de `i` e `j` percorrem `{-1, +1}` e geram os quatro sinais possív
 
 É por isso que a condição de parada é `y > x`: o octante que percorremos começa no topo, em `(0, r)`, e termina quando `x` alcança `y` — ou seja, na diagonal de 45°.
 
-##### Como decidir entre Leste e Sul?
+#### Como decidir entre Leste e Sul?
 
 Uma diferença importante em relação ao Ponto Médio da reta: lá as opções eram **E ou NE**, e a NE andava nos dois eixos. Aqui as opções são **E ou S**, e cada uma mexe em um eixo só. Nunca os dois na mesma volta.
 
@@ -732,17 +745,17 @@ Em cada ramo você faz duas coisas: atualizar o `d` com a variação corresponde
 
 > **Cuidado:** o `d` é atualizado nos **dois** ramos, sempre. Se um deles esquecer, o erro trava num sinal só e o laço passa a escolher sempre o mesmo movimento — a "circunferência" vira um traço reto.
 
-##### O algoritmo em passos
+#### O algoritmo em passos
 
 Tente implementar por você mesmo. Caso tenha dificuldade, siga os passos abaixo.
 
-###### Antes de entrar no laço
+##### Antes de entrar no laço
 
 1. **Comece no topo.** Coloque `0` em `x` e o raio em `y`. Esse é o ponto `(0, r)`, o começo do octante que vamos percorrer.
 
 2. **Calcule o erro inicial.** Guarde `1 - radius` em `d`.
 
-###### A cada volta do laço
+##### A cada volta do laço
 
 3. **Pinte os oito pontos.** Dentro dos dois `for`, some o centro ao ponto atual e pinte as duas variações: `(cx + x·i, cy + y·j)` e `(cx + y·i, cy + x·j)`. Como `i` e `j` percorrem `-1` e `+1`, as quatro combinações mais as duas variações cobrem os oito octantes.
 
@@ -753,7 +766,7 @@ Tente implementar por você mesmo. Caso tenha dificuldade, siga os passos abaixo
 
 5. **Decida se continua.** Repita enquanto `y` for maior que `x`. Quando eles se encontrarem, você chegou na diagonal de 45° e o octante acabou.
 
-##### Uma volta completa, com números
+#### Uma volta completa, com números
 
 Circunferência de raio `5`. Estado inicial: `x = 0`, `y = 5`, `d = 1 - 5 = -4`.
 
@@ -787,7 +800,7 @@ O resultado, com centro em `(6, 6)`:
 
 ## Criando `Polyline` e `Polygon`
 
-### `Polyline`:
+### `Polyline`
 
 Uma **polirreta** é uma sequência de pontos conectados por segmentos de reta. Não precisamos de nenhum algoritmo novo, cada par de pontos consecutivos é uma `Line`. Crie `src/objects/polyline.hpp`:
 
@@ -826,7 +839,7 @@ void Polyline::drawObject(Canvas& canvas, RGBColor color, DrawMethod method) {
 }
 ```
 
-### `Polygon`:
+### `Polygon`
 
 Um **polígono** é uma polirreta em que o último ponto se conecta de volta ao primeiro. Em outras palavras, um `Polygon` **é uma** `Polyline` fechada. Crie `src/objects/polygon.hpp`:
 
@@ -849,7 +862,6 @@ class Polygon : public Polyline {
 ```
 
 A classe inteira herda o `drawObject` **pronto** de `Polyline` e só precisa garantir, no construtor, que o contorno se feche.
-
 
 ## Juntando tudo: nossa primeira cena polimórfica
 
@@ -897,7 +909,7 @@ Cada chamada `obj->drawObject(...)` decide **em tempo de execução** qual imple
 
 Com as quatro formas em mãos, é hora de desenhar de verdade!
 
-#### Boneco palito
+### Boneco palito
 
 Crie uma cena com um boneco palito usando as formas de hoje:
 
@@ -906,7 +918,7 @@ Crie uma cena com um boneco palito usando as formas de hoje:
 
 Dica: rascunhe as coordenadas num papel quadriculado antes de codar. Um canvas de 400×400 é um bom tamanho para começar.
 
-#### Uma casa em um dia de sol
+### Uma casa em um dia de sol
 
 Agora uma cena que use **todas** as classes do dia:
 
@@ -915,7 +927,8 @@ Agora uma cena que use **todas** as classes do dia:
 - porta e janelas ficam por sua conta (`Polygon`s? `Line`s?);
 - o sol é um `Circle`.
 
-## Checklist:
+## Checklist
+
 - [x] Apresentação do repositório do trabalho (parte 2).
 - [x] Criação de classes com herança
 - [x] Criando a classe Object (Polimorfismo)
@@ -930,4 +943,3 @@ Agora uma cena que use **todas** as classes do dia:
 ## Referências
 
 - SHIRLEY, Peter et al. **Fundamentals of Computer Graphics**, third edition.
-
