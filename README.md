@@ -279,57 +279,62 @@ Repare como os conceitos do começo do dia aparecem aqui: `Line` **é um** `Obje
 
 #### Implementando o `drawObject` (`src/objects/line.cpp`)
 
-A preparação é comum a todos os métodos de desenho: posição atual, diferenciais e sentidos. Em seguida, um `switch` escolhe o algoritmo pedido:
+O nosso `drawObject` pode ser dividido em apenas três etapas, a preparação geral e comum a ambos os métodos de desenhos e o método propriamente dito. Dessa maneira, podemos estruturá-lo como:
 
 ```cpp
+
 void Line::drawObject(Canvas &canvas, RGBColor color, DrawMethod method) {
-    int x = start.x();
-    int y = start.y();
 
-    int dx = end.x() - start.x(); //> Diferencial de x
-    int dy = end.y() - start.y(); //> Diferencial de y
+  // [1] Preparação comum a ambos os métodos.
 
-    int stepX = dx >= 0 ? 1 : -1; //> Sentido de x (1: direita, -1: esquerda)
-    int stepY = dy >= 0 ? 1 : -1; //> Sentido de y (1: baixo, -1: cima)
+        switch (method) {
 
-    switch (method) {
-        /* ...um case para cada DrawMethod... */
-    }
+            // [2] - Bresenhan
+            case DrawMethod::Bresenhan: {
+            /* TODO */
+            }
+
+            // [3] - BresenhanMidpoint
+            case DrawMethod::BresenhanMidpoint: {
+            /* TODO */
+            }
+
+        }
 }
 ```
 
-Relembrando o caso anterior, o `dx` e `dy` podem ser vistos como:
 
+#### Preparação comum aos métodos de desenhos:
+A preparação geral serve para nos mostrar o diferencial em ambos os eixos:
 ![Dx Dy](images/dydx.png "Variações em ambos os eixos")
 
+E em sentido de qual octante estaremos indo:
+![octantes](images/octantes.png "Octantes em um plano cartesiano.")
 
+Ela é importante para definir instâncias de `Line` que crescem em qualquer sentido no plano. Resumindo:
 
+ - O passo (stepX e stepY): Uma variação não negativa em um eixo define que estamos aumentando os valores (passo +1), enquanto uma variação negativa indica que estamos diminuindo (passo -1).
+ - As variações (dx e dy): Definem a distância absoluta que o ponto start precisa percorrer até chegar em end.
+
+```cpp
 #### `DrawMethod::Bresenhan`
 
-Usaremos como forma padrão o `DrawMethod::Bresenhan`.
-
+Usaremos como forma padrão o `DrawMethod::Bresenhan`. Este método é famoso por usar apenas aritmética inteira, evitando números de ponto flutuante e divisões, o que o torna extremamente rápido. Sua implementação pode ser divida como:
 
 ```cpp
 case DrawMethod::Bresenhan: {
-    dx = std::abs(dx);
-    dy = -std::abs(dy); //> Repare no sinal negativo!
-
-    int d = dx + dy; //> Acumulador de erro
+    // [1] - Módulo de dx e dy, mas dy negado ao final.
 
     canvas.add(Pixel(x, y), color);
+    int d = dx + dy; //>  o "erro"
 
     while (x != end.x() || y != end.y()) {
         int d2 = 2 * d;
 
-        if (d2 >= dy) { //> Hora de avançar em x
-            x += stepX;
-            d += dy;
-        }
+        // [2] - Avanço em X
 
-        if (d2 <= dx) { //> Hora de avançar em y
-            y += stepY;
-            d += dx;
-        }
+
+        // [3] - Avanço em Y
 
         canvas.add(Pixel(x, y), color);
     }
@@ -337,14 +342,238 @@ case DrawMethod::Bresenhan: {
 }
 ```
 
-O que está acontecendo aqui:
+##### O que são as variáveis d e d2?
 
-- `dy` entra **negativo** de propósito: assim um único número `d` consegue carregar a "dívida" dos dois eixos ao mesmo tempo — cada passo em x soma `dy` (puxa `d` para baixo), cada passo em y soma `dx` (puxa para cima), e o laço vive equilibrando os dois lados;
-- os dois `if` são **independentes** (não é um `if/else`): quando ambos disparam na mesma iteração, o passo é diagonal;
-- cada comparação (`d2 >= dy` e `d2 <= dx`) é o critério do ponto médio de um dos dois ramos da versão anterior — só que aqui os dois ramos convivem no mesmo laço, e por isso esse código funciona em **qualquer octante** sem nenhum caso especial;
-- o laço roda até `(x, y)` alcançar `end` nos dois eixos, então o último pixel também é pintado.
+Imagine que você está desenhando uma reta em um caderno quadriculado. A linha matemática perfeita muitas vezes vai passar bem no meio dos quadradinhos, mas você só pode pintar o quadradinho inteiro (que representa o nosso pixel na tela).
 
-Provar formalmente que as duas versões escolhem os mesmos pixels é um ótimo exercício — se tiver curiosidade, chame um petiano para rabiscar isso no quadro!
+Como o computador decide qual quadradinho pintar? É aí que entram as variáveis d e d2:
+
+ - A variável d (o erro Acumulado):
+A variável d funciona como um "medidor de distância" ou "medidor de erro". Ela calcula o quão distante o nosso pixel atual está da linha matemática ideal. Conforme vamos pintando a tela, esse erro vai acumulando. Se a distância pender muito para um eixo, o algoritmo entende que é hora de "dar um passo" e mudar a coordenada do pixel para compensar, mantendo o desenho o mais fiel possível à reta perfeita.
+
+ - A variável d2 (a otimização):
+Na teoria geométrica, o momento exato de dar esse passo e compensar a rota é quando o erro passa da metade de um pixel (ou seja, quando o erro é maior que 0.5). O grande problema computacional é que processadores gastam muito mais tempo e energia lidando com números decimais (variáveis do tipo float) do que com números inteiros (int).
+
+Para resolver isso e fazer o algoritmo rodar de forma extremamente rápida, o algoritmo multiplica essa regra por 2. Quando dobramos tudo, o limite que era 0.5 vira 1, e o nosso erro `d` passa a ser calculado como `d2`  (d2 = 2 * d).
+
+##### Como avançar em X e Y?
+
+Dentro do seu laço de repetição, você precisará decidir quando o pixel deve andar para o lado, quando deve andar para cima/baixo, ou quando deve fazer os dois ao mesmo tempo (diagonal).
+
+Para isso, você usará o seu erro dobrado (d2) e fará duas verificações independentes:
+
+1. A regra para o avanço Horizontal (Eixo X):
+Verifique se a nossa balança pendulou para o lado: o valor de d2 é maior ou igual ao nosso limite negativo dy?
+
+2. A regra para o avanço Vertical (Eixo Y):
+Verifique se a balança pendulou para o outro limite: o valor de d2 é menor ou igual ao limite positivo dx?
+
+##### O algoritmo em passos
+
+Tente implementar por você mesmo. Caso tenha dificuldade, tente seguir os passos abaixo.
+
+###### Antes de entrar no laço
+
+1. **Guarde o ponto de partida.** Coloque em `x` e `y` as coordenadas do ponto inicial da reta. É a posição atual do seu "cursor", e ela vai andar até o ponto final.
+
+2. **Descubra para que lado a reta cresce.** Se o x final for maior ou igual ao inicial, a reta vai para a direita: guarde `1` em `stepX`. Se for menor, ela vai para a esquerda: guarde `-1`. Faça o mesmo para `stepY` comparando os y. A partir daqui, você nunca mais precisa pensar em direção e sempre que precisar andar, some `stepX` ou `stepY` e o sentido sai correto sozinho.
+
+3. **Transforme `dx` e `dy` em medidas sem sinal.** Troque `dx` pelo seu valor absoluto, e `dy` pelo valor absoluto **negado**. Ou seja: `dx` fica positivo e `dy` fica negativo. O sinal original já foi guardado no passo anterior, então não se perde nada.
+
+4. **Calcule o erro inicial.** Some `dx` com `dy` e guarde em `d`. Como `dy` é negativo, isso é o mesmo que subtrair um do outro.
+
+5. **Pinte o ponto de partida.** O laço abaixo funciona no esquema "primeiro anda, depois pinta", então o primeiro pixel precisa ser pintado aqui fora — senão ele ficaria de fora do desenho.
+
+###### A cada volta do laço
+
+6. **Calcule `d2` e anote.** `d2` é simplesmente o dobro de `d`. Anote esse valor numa variável, porque você vai usá-lo **duas vezes** e ele não pode mudar no meio do caminho. Este é o ponto mais fácil de errar: os dois testes abaixo precisam responder sobre a *mesma* posição, a de agora.
+
+7. **Verifique se `d2` é maior ou igual a `dy`.**
+   Se for, faça duas coisas:
+   - ande um passo em x, somando `stepX` ao `x`;
+   - some `dy` ao `d`. Como `dy` é negativo, isso **diminui** o erro.
+
+   Se não for, não faça nada, o x fica onde está nesta volta.
+
+8. **Verifique se `d2` é menor ou igual a `dx`.**
+   **Atenção:** use o `d2` que você anotou no passo 6, e não recalcule o dobro de `d` — porque o passo 7 pode ter acabado de mexer no `d`.
+   Se for, faça duas coisas:
+   - ande um passo em y, somando `stepY` ao `y`;
+   - some `dx` ao `d`. Como `dx` é positivo, isso **aumenta** o erro.
+
+   Se não for, o y fica onde está nesta volta.
+
+9. **Desenhe no ponto atual.** Pinte o pixel em `(x, y)`, seja qual for a combinação de passos que aconteceu.
+
+10. **Decida se continua.** Se `x` já é igual ao x final **e** `y` já é igual ao y final, você chegou: pare. Caso contrário, volte ao passo 6.
+
+##### Sobre os passos 7 e 8
+
+Repare que eles são **duas perguntas separadas**, e não uma escolha entre duas opções. Isso é de propósito, e permite três desfechos por volta:
+
+- só o passo 7 acontece → o cursor anda na horizontal;
+- só o passo 8 acontece → o cursor anda na vertical;
+- **os dois acontecem** → o cursor anda na diagonal, numa única volta.
+
+Se você trocasse por "ou um ou outro", o terceiro caso deixaria de existir e as retas inclinadas sairiam como uma escadinha do dobro da espessura.
+
+Repare também que os dois passos empurram o erro para lados opostos: o 7 diminui `d`, o 8 aumenta. É essa oposição que mantém `d` preso oscilando, e é por isso que o `dy` precisou ficar negativo lá no passo 3 — as duas linhas somam ao `d`, então uma delas só consegue diminuir se o próprio valor já for negativo.
+
+##### Uma volta completa, com números
+
+Reta de `(0,0)` até `(10,4)`. Depois da preparação: `stepX = 1`, `stepY = 1`, `dx = 10`, `dy = -4`, `d = 6`. O ponto `(0,0)` já foi pintado.
+
+**Primeira volta:**
+
+- `d2` é o dobro de 6, ou seja, **12**.
+- 12 é maior ou igual a -4? **Sim.** Então x vira 1, e `d` passa a ser `6 + (-4) = 2`.
+- 12 é menor ou igual a 10? **Não.** O y continua em 0.
+- Desenha em `(1, 0)`.
+- x é 1 e o destino é 10, então continua.
+
+**Segunda volta:**
+
+- `d2` é o dobro de 2, ou seja, **4**. Anotado.
+- 4 é maior ou igual a -4? **Sim.** x vira 2, e `d` passa a ser `2 + (-4) = -2`.
+- 4 é menor ou igual a 10? **Sim.** (usando o 4 anotado, não o -2 que o `d` acabou de virar). y vira 1, e `d` passa a ser `-2 + 10 = 8`.
+- Desenha em `(2, 1)` — esta foi uma volta diagonal.
+- Ainda não chegou, continua.
+
+E assim por diante, até `x` e `y` baterem em `(10, 4)`.
+
+#### `DrawMethod::BresenhanMidPoint`
+
+O método do Ponto Médio (Midpoint) resolve o mesmo problema de rasterização, mas sob uma perspectiva matemática diferente. Em vez de medir o erro acumulado nos eixos independentemente, ele foca na equação implícita da reta e avalia o ponto exato no meio de dois pixels candidatos para decidir qual deles está mais perto da reta real.
+
+Sua implementação pode ser dividida como:
+
+```cpp
+case DrawMethod::BresenhanMidpoint: {
+    // [1] - Garantir que dx e dy são positivos absolutos (módulo)
+
+    canvas.add(Pixel(x,y), color);
+
+    // [2] - Avaliar o eixo dominante para evitar "buracos" na reta
+    if (dy <= dx) {
+        // [3] - Preparação para quando X cresce mais rápido (reta "deitada")
+        /* TODO */
+        // [4] - Laço de repetição avançando em X
+        /* TODO */
+    } else {
+        // [5] - Preparação para quando Y cresce mais rápido (reta "em pé")
+        /* TODO */
+        // [6] - Laço de repetição avançando em Y
+        /* TODO */
+    }
+    break;
+}
+
+```
+
+##### Por que dividir em duas condições ?
+
+Diferente do Bresenham generalizado que resolve tudo em um único laço, o algoritmo do Ponto Médio exige saber qual eixo é o "dominante" (qual tem a maior variação).
+
+Se uma reta é mais horizontal (dy <= dx), sabemos que para cada pixel avançado em X, avançaremos no máximo um pixel em Y. Se tentássemos usar X como base para uma reta muito vertical, acabaríamos desenhando pixels muito espaçados em Y, criando uma linha pontilhada cheia de buracos. Portanto, dividimos a lógica: andamos 1 pixel de cada vez no eixo dominante, e usamos a variável de decisão para saber se precisamos mover o eixo secundário.
+
+##### A variável de decisão `d`
+
+No método anterior, nós tínhamos duas variáveis e dois `if`s independentes para olhar os erros em X e Y. Aqui no Ponto Médio, a lógica é mais simples e direta.
+
+Como nós já sabemos qual eixo cresce mais rápido (graças ao eixo dominante), nós sabemos que sempre vamos dar um passo nesse eixo principal a cada volta do laço. A única dúvida que resta para o computador é:
+
+> "O eixo secundário também deve andar, ou deve ficar parado?"
+
+A variável `d` serve exatamente como um juiz para essa única decisão. Ela avalia a posição do "ponto médio" entre as duas escolhas possíveis.
+
+Na prática da sua implementação, você deve encarar o `d` da seguinte forma:
+
+- **Se `d < 0`:** a reta real está passando mais "reta". O pixel que fica logo em frente (Leste) é o mais próximo.
+
+    - **Ação na tela:** você anda apenas no eixo principal. O eixo secundário fica onde está.
+    - **Ação na matemática:** o seu "erro" muda. Você deve somar a ele o custo de andar reto (uma constante que chamaremos de `stepE`).
+
+- **Se `d >= 0`:** a reta inclinou o suficiente. O pixel da diagonal (Nordeste) passou a ser a melhor escolha.
+
+    - **Ação na tela:** você anda na diagonal. Ou seja, soma o passo tanto no eixo principal quanto no eixo secundário.
+    - **Ação na matemática:** você deve somar ao seu `d` o custo de andar na diagonal (uma constante que chamaremos de `stepNE`).
+
+###### A otimização dos pesos (`stepE` e `stepNE`)
+
+Para calcular esse ponto médio na geometria tradicional, envolveríamos a fração `0.5` (metade do caminho entre dois pixels). Como fugimos de decimais e divisões, a fórmula inteira é multiplicada por 2.
+
+A grande vantagem disso para o seu código é que os "custos" de movimento (`stepE` e `stepNE`) **não mudam nunca** durante o desenho da linha. Você pode calcular essas multiplicações por 2 antes do seu laço `while` começar. Assim, dentro da repetição (onde a performance mais importa), você só fará contas de adição e um único `if / else`.
+
+##### O algoritmo em passos (considerando o eixo X como dominante: `dy <= dx`)
+
+Tente implementar seguindo a lógica. Se precisar, guie-se pelos passos:
+
+###### Antes de entrar no laço
+
+1. **Trabalhe com distâncias absolutas.** Transforme `dx` e `dy` em seus valores absolutos positivos. A direção real já está guardada em `stepX` e `stepY` da preparação comum.
+
+2. **Pinte o ponto inicial.** Pinte o primeiro pixel em `(x, y)` fora do laço.
+
+3. **Calcule a decisão inicial.** Calcule `d = 2 * dy - dx`. Esse é o valor da equação da reta avaliada no primeiro ponto médio.
+
+4. **Pré-calcule as constantes de incremento.**
+
+    - Se escolhermos ir reto, o erro muda em `2 * dy`. Guarde isso numa variável `stepE`.
+    - Se escolhermos ir na diagonal, o erro muda em `2 * (dy - dx)`. Guarde isso em `stepNE`.
+
+    > **Nota:** ao pré-calcular isso fora do laço, poupamos o processador de fazer multiplicações repetidas.
+
+###### A cada volta do laço
+
+5. **Ande no eixo principal.** Some `stepX` à coordenada `x`. Este eixo sempre avança a cada iteração.
+
+6. **Tome a decisão.** Verifique se `d < 0`:
+
+    - **Se for verdadeiro (Leste):** a reta está mais próxima do eixo principal. Não mexa no `y`. Apenas some a constante `stepE` ao seu erro `d`.
+    - **Se for falso (Nordeste):** a reta inclinou o suficiente. Some `stepY` à coordenada `y` (andando na diagonal) e some a constante `stepNE` ao seu erro `d`.
+
+7. **Desenhe no ponto atual.** Pinte o pixel na nova coordenada `(x, y)`.
+
+8. **Decida se continua.** Repita os passos de 5 a 7 até que `x` seja igual a `end.x()`.
+
+> Para o caso onde Y é dominante, a lógica é idêntica, mas trocando os papéis de X e Y: o laço anda em Y, a decisão inicial vira `d = 2 * dx - dy`, e os passos pré-calculados tornam-se baseados em `dx`.
+
+###### Uma volta completa, com números
+
+Reta de `(0,0)` até `(3,1)`.
+
+- **Preparação comum:** `stepX = 1`, `stepY = 1`
+- **Preparação do Midpoint:** `dx = 3`, `dy = 1`
+
+O eixo X é dominante, pois `1 <= 3`. O ponto `(0,0)` já foi desenhado.
+
+**Pré-cálculos:**
+
+- `d = 2 * 1 - 3 = -1`
+- `stepE = 2 * 1 = 2`
+- `stepNE = 2 * (1 - 3) = -4`
+
+**Primeira volta:**
+
+- Andamos em X: `x` vira `1`.
+- Verificamos `d`: como `-1 < 0`, escolhemos o **Leste**.
+- O `y` continua `0`. O novo `d` será `d + stepE` → `-1 + 2 = 1`.
+- Desenha em `(1, 0)`.
+
+**Segunda volta:**
+
+- Andamos em X: `x` vira `2`.
+- Verificamos `d`: como `1 >= 0`, escolhemos o **Nordeste**.
+- O `y` vira `1` (andou na diagonal). O novo `d` será `d + stepNE` → `1 + (-4) = -3`.
+- Desenha em `(2, 1)`.
+
+**Terceira volta:**
+
+- Andamos em X: `x` vira `3`.
+- Verificamos `d`: como `-3 < 0`, escolhemos o **Leste** novamente.
+- O `y` continua `1`. O novo `d` será `-3 + 2 = -1`.
+- Desenha em `(3, 1)`.
+- `x` chegou ao fim. Fim do desenho.
 
 ## Criando a classe `Circle`
 
@@ -557,7 +786,7 @@ Cada chamada `obj->drawObject(...)` decide **em tempo de execução** qual imple
 
 ## Exercícios
 
-Com as quatro formas em mãos, é hora de desenhar de verdade! Algumas coisinhas novas podem aparecer, mas ajudaremos com qualquer dúvida.
+Com as quatro formas em mãos, é hora de desenhar de verdade!
 
 #### Boneco palito
 
