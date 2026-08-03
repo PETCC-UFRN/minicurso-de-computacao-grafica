@@ -241,7 +241,7 @@ Dessa forma, suponha que queremos desenhar uma reta entre `P0` e `P1`:
 ![P0 and P1](images/p0_and_p1.png "P0 e P1")
 
 Uma boa solução pode ser:
-![Line from P0 to P1] (images/p0_to_p1_line.png "Linha de P0 a P1")
+![Line from P0 to P1](images/p0_to_p1_line.png "Linha de P0 a P1")
 
 Mas como desenhá-la?
 
