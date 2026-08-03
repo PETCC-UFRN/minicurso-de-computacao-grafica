@@ -53,6 +53,7 @@ Uma imagem no formato PPM3 é apenas um arquivo de texto com a extensão `.ppm`,
 ```text
 P3           # Indica que é uma imagem com cores em RGB em ASCII
 3 2          # Indica largura e altura da imagem em pixels
+255 		 # Indica o valor máximo do PPM
 # Tudo abaixo disso é o corpo da imagem
 255   0   0  # vermelho
   0 255   0  # verde
