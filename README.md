@@ -506,7 +506,8 @@ case DrawMethod::BresenhanMidpoint: {
     }
 
     break;
-}```
+}
+```
 
 ##### Por que dividir em duas condições ?
 
