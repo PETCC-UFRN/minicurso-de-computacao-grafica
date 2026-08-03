@@ -448,26 +448,65 @@ Sua implementação pode ser dividida como:
 
 ```cpp
 case DrawMethod::BresenhanMidpoint: {
-    // [1] - Garantir que dx e dy são positivos absolutos (módulo)
 
-    canvas.add(Pixel(x,y), color);
+    // [1] - dx e dy como distâncias absolutas (módulo)
+    /* TODO */
 
-    // [2] - Avaliar o eixo dominante para evitar "buracos" na reta
-    if (dy <= dx) {
-        // [3] - Preparação para quando X cresce mais rápido (reta "deitada")
-        /* TODO */
-        // [4] - Laço de repetição avançando em X
-        /* TODO */
-    } else {
-        // [5] - Preparação para quando Y cresce mais rápido (reta "em pé")
-        /* TODO */
-        // [6] - Laço de repetição avançando em Y
-        /* TODO */
+    canvas.add(Pixel(x, y), color);
+
+    if (dy <= dx) {                   // [2] - X comanda: reta "deitada"
+
+      int d = 2 * dy - dx;            //> decisão inicial, no primeiro ponto médio
+      int stepE  = 2 * dy;            //> se leste for escolhido
+      int stepNE = 2 * (dy - dx);     //> se nordeste for escolhido
+
+      while (x != end.x()) {
+
+        x += stepX;                   //> o eixo principal SEMPRE avança
+
+        // [3] - A decisão: o eixo secundário acompanha ou não?
+        if (d < 0) {                  //> LESTE — a reta ainda não cruzou o ponto
+                                      //  médio, então o pixel em frente, na MESMA
+                                      //  linha, é o mais próximo. O y fica parado.
+          /* TODO */
+        }
+        else {                        //> NORDESTE — a reta já cruzou o ponto
+                                      //  médio, então o pixel da diagonal é o
+                                      //  mais próximo. O y anda junto.
+          /* TODO */
+        }
+
+        canvas.add(Pixel(x, y), color);
+      }
+
+    } else {                          // [2] - Y comanda: reta "em pé"
+
+      int d = 2 * dx - dy;            //> decisão inicial, no primeiro ponto médio
+      int stepN  = 2 * dx;            //> se norte for escolhido
+      int stepNE = 2 * (dx - dy);     //> se nordeste for escolhido
+
+      while (y != end.y()) {
+
+        y += stepY;                   //> o eixo principal SEMPRE avança
+
+        // [4] - Mesma decisão de [3], com os papéis trocados
+        if (d < 0) {                  //> NORTE — a reta ainda não cruzou o ponto
+                                      //  médio, então o pixel logo acima, na MESMA
+                                      //  coluna, é o mais próximo. O x fica parado.
+          /* TODO */
+        }
+        else {                        //> NORDESTE — a reta já cruzou o ponto
+                                      //  médio, então o pixel da diagonal é o
+                                      //  mais próximo. O x anda junto.
+          /* TODO */
+        }
+
+        canvas.add(Pixel(x, y), color);
+      }
     }
-    break;
-}
 
-```
+    break;
+}```
 
 ##### Por que dividir em duas condições ?
 
@@ -604,76 +643,146 @@ class Circle : public Object {
 };
 ```
 
-### A matemática: simetria de 8 pontos + ponto médio
+#### Implementando o `drawObject` (`src/objects/circle.cpp`)
 
-A mesma estratégia da reta funciona aqui — só trocamos a função implícita. Para uma circunferência de raio `r` centrada na origem:
+A estratégia é a mesma da reta: um erro inteiro, atualizado por soma, decidindo a cada volta qual pixel pintar. Muda só a função que descreve a curva — e ganhamos um bônus que a reta não tinha.
+
+Sua implementação pode ser dividida como:
+
+```cpp
+void Circle::drawObject(Canvas& canvas, RGBColor color, DrawMethod) {
+
+    // [1] - Estado inicial: começamos no topo da circunferência
+    int x = 0;
+    int y = radius;
+    int d = /* TODO */;
+
+    while (y > x) {              //> percorremos UM octante — a simetria faz o resto
+
+      // [2] - Espelha o ponto atual nos outros 7 octantes
+      for (int i{-1}; i <= 1; i += 2) {
+        for (int j{-1}; j <= 1; j += 2) {
+          /* TODO */
+        }
+      }
+
+      // [3] - A decisão: seguir de lado (E) ou descer (S)?
+      if (d < 0) {               //> LESTE — o ponto médio ainda está DENTRO da
+                                 //  circunferência, então dá para continuar na
+                                 //  horizontal. O y fica parado.
+        /* TODO */
+      }
+      else {                     //> SUL — o ponto médio já saiu para FORA, então
+                                 //  descemos uma linha para voltar ao arco.
+                                 //  O x fica parado.
+        /* TODO */
+      }
+    }
+}
+```
+
+
+##### O que são as variáveis `x`, `y` e `d`?
+
+`x` e `y` **não são a posição na tela**. Eles são a posição relativa ao centro, dentro de um único octante. A posição real só aparece no `[2]`, quando somamos o centro.
+
+O `d` é o mesmo tipo de coisa que era na reta: um erro inteiro que diz de que lado da curva ideal nós estamos. Para a circunferência de raio `r`, a função que descreve a curva é:
 
 ```
 F(x, y) = x² + y² - r²
 ```
 
-- `F < 0`: ponto **dentro** da circunferência;
-- `F = 0`: ponto **sobre** ela;
-- `F > 0`: ponto **fora**.
+- `F < 0` → o ponto está **dentro** da circunferência;
+- `F = 0` → está **em cima** dela;
+- `F > 0` → está **fora**.
 
-E ganhamos um bônus enorme: a circunferência tem **simetria de 8 pontos**. Se `(x, y)` pertence a ela, então `(±x, ±y)` e `(±y, ±x)` também pertencem. Ou seja, basta calcular **um oitavo** do contorno (um octante) e refletir cada ponto calculado para os outros sete — somando o centro `(cx, cy)` na hora de pintar:
+Assim como na reta, nunca calculamos `F` do zero. Guardamos o valor em `d` e vamos **somando o quanto ele muda** a cada movimento. As duas variações são:
+
+- andar para o lado (**E**, `x + 1`) muda `F` em `2x + 1`
+- descer uma linha (**S**, `y - 1`) muda `F` em `-2y + 1`
+
+E o valor inicial é `d = 1 - r`. Ele vem de avaliar `F` no primeiro ponto médio, que dá `5/4 - r` — a fração `1/4` é descartada porque todas as atualizações são inteiras e ela nunca chega a mudar o resultado de uma comparação com zero.
+
+##### Por que basta calcular um oitavo?
+
+A circunferência é simétrica em oito direções: se `(x, y)` pertence a ela, então `(±x, ±y)` e `(±y, ±x)` também pertencem.
+
+Isso significa que basta percorrer **um octante** e refletir cada ponto calculado para os outros sete, somando o centro `(cx, cy)` na hora de pintar:
 
 ```
 (cx + x, cy + y)   (cx - x, cy + y)   (cx + x, cy - y)   (cx - x, cy - y)
 (cx + y, cy + x)   (cx - y, cy + x)   (cx + y, cy - x)   (cx - y, cy - x)
 ```
 
-Vamos percorrer o octante que começa em `(0, r)`. Nele, a cada iteração fazemos um de dois movimentos: andamos para o lado (passo **E**, `x + 1`) ou descemos em direção ao eixo x (passo **S**, `y - 1`). A decisão vem, de novo, do sinal de uma variável `d` que acompanha `F` de forma **incremental**:
+Os dois `for` de `i` e `j` percorrem `{-1, +1}` e geram os quatro sinais possíveis. A troca `(x, y) → (y, x)` na segunda chamada a `add` gera a reflexão na diagonal. Quatro sinais × duas trocas = os oito pontos da tabela, em quatro voltas de laço.
 
-- Passo E:  `F(x+1, y) - F(x, y) = 2x + 1`
-- Passo S:  `F(x, y-1) - F(x, y) = -2y + 1`
+É por isso que a condição de parada é `y > x`: o octante que percorremos começa no topo, em `(0, r)`, e termina quando `x` alcança `y` — ou seja, na diagonal de 45°.
 
-(confira as duas contas expandindo os quadrados!)
+##### Como decidir entre Leste e Sul?
 
-A regra fica: **enquanto `d < 0`, ainda estamos dentro da circunferência e podemos continuar andando com E; quando `d ≥ 0`, alcançamos ou passamos do arco, e é hora de descer com S.**
+Uma diferença importante em relação ao Ponto Médio da reta: lá as opções eram **E ou NE**, e a NE andava nos dois eixos. Aqui as opções são **E ou S**, e cada uma mexe em um eixo só. Nunca os dois na mesma volta.
 
-E o valor inicial? Avaliamos `F` no primeiro ponto médio, `(1, r - 1/2)`:
+A regra sai direto do sinal de `F`:
+
+- **Enquanto `d < 0`**, o ponto médio ainda está dentro da circunferência. Ainda cabe andar para o lado: escolhemos **E**.
+- **Quando `d >= 0`**, o ponto médio alcançou ou passou do arco. É hora de descer: escolhemos **S**.
+
+Em cada ramo você faz duas coisas: atualizar o `d` com a variação correspondente e mover a coordenada certa.
+
+> **Cuidado:** o `d` é atualizado nos **dois** ramos, sempre. Se um deles esquecer, o erro trava num sinal só e o laço passa a escolher sempre o mesmo movimento — a "circunferência" vira um traço reto.
+
+##### O algoritmo em passos
+
+Tente implementar por você mesmo. Caso tenha dificuldade, siga os passos abaixo.
+
+###### Antes de entrar no laço
+
+1. **Comece no topo.** Coloque `0` em `x` e o raio em `y`. Esse é o ponto `(0, r)`, o começo do octante que vamos percorrer.
+
+2. **Calcule o erro inicial.** Guarde `1 - radius` em `d`.
+
+###### A cada volta do laço
+
+3. **Pinte os oito pontos.** Dentro dos dois `for`, some o centro ao ponto atual e pinte as duas variações: `(cx + x·i, cy + y·j)` e `(cx + y·i, cy + x·j)`. Como `i` e `j` percorrem `-1` e `+1`, as quatro combinações mais as duas variações cobrem os oito octantes.
+
+4. **Tome a decisão.** Verifique se `d < 0`:
+
+    - **Se for verdadeiro (Leste):** some `2 * x + 1` ao `d` e **depois** incremente o `x`. A ordem importa: a variação usa o `x` de **antes** do passo.
+    - **Se for falso (Sul):** some `-2 * y + 1` ao `d` e **depois** decremente o `y`. Mesma observação: a variação usa o `y` de antes.
+
+5. **Decida se continua.** Repita enquanto `y` for maior que `x`. Quando eles se encontrarem, você chegou na diagonal de 45° e o octante acabou.
+
+##### Uma volta completa, com números
+
+Circunferência de raio `5`. Estado inicial: `x = 0`, `y = 5`, `d = 1 - 5 = -4`.
+
+| volta | `x` | `y` | `d` | `d < 0`? | escolha | novo `x, y` | novo `d` |
+|:-----:|:---:|:---:|:---:|:--------:|:-------:|:-----------:|:--------:|
+| 1 | 0 | 5 | -4 | sim | **E** | `1, 5` | -3 |
+| 2 | 1 | 5 | -3 | sim | **E** | `2, 5` | 0 |
+| 3 | 2 | 5 | 0 | não | **S** | `2, 4` | -9 |
+| 4 | 2 | 4 | -9 | sim | **E** | `3, 4` | -4 |
+| 5 | 3 | 4 | -4 | sim | **E** | `4, 4` | 3 |
+
+Na volta 5, `x` vira `4` e alcança o `y`. Como `y > x` deixa de ser verdadeiro, o laço termina — cinco voltas desenharam a circunferência inteira, porque cada uma pintou oito pixels.
+
+O resultado, com centro em `(6, 6)`:
 
 ```
-F(1, r - 1/2) = 1 + r² - r + 1/4 - r² = 5/4 - r
+   .............
+   ....#####....
+   ...##...##...
+   ..#.......#..
+   .##.......##.
+   .#.........#.
+   .#.........#.
+   .#.........#.
+   .##.......##.
+   ..#.......#..
+   ...##...##...
+   ....#####....
+   .............
 ```
-
-Como todas as atualizações (`2x + 1`, `-2y + 1`) são inteiras, a fração `1/4` nunca muda o resultado de uma comparação com zero — então podemos descartá-la e usar simplesmente:
-
-```
-d0 = 1 - r
-```
-
-#### Implementando o `drawObject` (`src/objects/circle.cpp`)
-
-```cpp
-void Circle::drawObject(Canvas& canvas, RGBColor color, DrawMethod) {
-    int x = 0;
-    int y = radius;
-    int d = /*TODO: valor inicial da decisão*/;
-
-    while (y > x) { //> Percorremos um único octante — a simetria faz o resto!
-        for (int i{-1}; i <= 1; i += 2) {
-            for (int j{-1}; j <= 1; j += 2) {
-                canvas.add(Pixel(center.x() + x * i, center.y() + y * j), color);
-                canvas.add(Pixel(center.x() + y * i, center.y() + x * j), color);
-            }
-        }
-
-        if (/*TODO: ainda estamos dentro?*/) {
-            /*TODO: passo E — atualize d e avance com x*/
-        }
-        else {
-            /*TODO: passo S — atualize d e desça com y*/
-        }
-    }
-}
-```
-
-Dois detalhes de implementação:
-
-- Os `for` de `i` e `j` percorrem `{-1, +1}` e, junto com a troca `(x, y) → (y, x)` da segunda chamada a `add`, geram exatamente as 8 reflexões da tabela acima;
-- O parâmetro `DrawMethod` fica **sem nome** na definição: a circunferência (por enquanto) tem um único algoritmo de desenho, e omitir o nome de um parâmetro não usado evita o warning do `-Wall` que o projeto compila.
 
 ## Criando `Polyline` e `Polygon`
 
