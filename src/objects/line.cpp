@@ -13,13 +13,14 @@ namespace pet
 
         switch (method) {
 
+            case DrawMethod::Bresenhan: {
+            /* TODO */
+            }
+
             case DrawMethod::BresenhanMidpoint: {
             /* TODO */
             }
 
-            case DrawMethod::Bresenhan: {
-            /* TODO */
-            }
         }
     }
 }

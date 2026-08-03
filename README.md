@@ -208,7 +208,7 @@ Para iniciar nosso projeto, precisamos de uma interface comum a todos nossos obj
     };
 ```
 
-Essa classe vive em `src/objects/object.hpp` e será a **base** de todas as formas que desenharemos. Todos os headers do projeto seguem o mesmo padrão: include guards — `#ifndef`/`#define`/`#endif` — e o namespace `pet`. Omitiremos isso nos trechos daqui em diante.
+Essa classe vive em `src/objects/object.hpp` e será a **base** de todas as formas que desenharemos. Todos os headers do projeto seguem o mesmo padrão: include guards — `#ifndef`/`#define`/`#endif` — e o namespace `pet`.
 
 Vamos entender alguns detalhes dessa classe:
 
@@ -231,116 +231,23 @@ enum class DrawMethod {
 
 Hoje vamos nos concentrar nos dois primeiros, que são duas formas do mesmo algoritmo clássico. Usamos `enum class` para que os nomes fiquem no escopo `DrawMethod::`.
 
-## Embasamento matemático: desenhando retas com inteiros
+## Desenhando retas com inteiros
 
 ### O problema
 
 Uma reta é um objeto contínuo, mas nossa tela é uma matriz de pixels em posições inteiras. **Rasterizar** uma reta é escolher, entre esses pixels, quais melhor aproximam a reta ideal que vai de `(x0, y0)` até `(x1, y1)`.
 
-A primeira ideia costuma ser usar a equação que conhecemos da escola:
+Dessa forma, suponha que queremos desenhar uma reta entre `P0` e `P1`:
+![P0 and P1](images/p0_and_p1.png "P0 e P1")
 
-```
-y = m*x + b,    onde m = Δy/Δx,  Δx = x1 - x0,  Δy = y1 - y0
-```
+Uma boa solução pode ser:
+![Line from P0 to P1] (images/p0_to_p1_line.png "Linha de P0 a P1")
 
-e, para cada coluna `x` entre `x0` e `x1`, calcular o `y` correspondente e arredondar (essa é, essencialmente, a ideia do algoritmo **DDA**). Funciona, mas tem dois problemas:
+Mas como desenhá-la?
 
-1. Quando `|m| > 1`, a reta sobe mais de um pixel por coluna e o desenho fica com buracos (dá para consertar percorrendo o eixo dominante, mas o problema seguinte continua);
-2. Usa ponto flutuante — uma multiplicação ou soma real, mais um arredondamento — **para cada pixel** desenhado.
+### Criando a classe `Line`
 
-O algoritmo que usaremos, publicado por Jack Bresenham em 1965 para controlar plotters da IBM, resolve os dois de uma vez: ele escolhe o pixel certo usando **apenas somas e comparações de inteiros**. Isso era vital numa época em que hardware de ponto flutuante era um luxo — e continua ótimo hoje, porque aritmética inteira é exata: não há erro de arredondamento se acumulando ao longo da reta.
-
-### A forma implícita da reta
-
-O primeiro passo é trocar a forma `y = m*x + b` (que exige a divisão `Δy/Δx`) pela **forma implícita**. Partindo de `y - y0 = (Δy/Δx)*(x - x0)` e multiplicando os dois lados por `Δx`, obtemos a função:
-
-```
-F(x, y) = Δy*(x - x0) - Δx*(y - y0)
-```
-
-Ela tem duas propriedades que vamos explorar:
-
-- `F(x, y) = 0` exatamente quando `(x, y)` está **sobre** a reta;
-- o **sinal** de `F` diz de que lado da reta o ponto está. Para ver isso, chame de `y_reta(x)` o valor exato que a reta assume na coluna `x` e substitua na definição — depois de algumas manipulações, chega-se à identidade:
-
-```
-F(x, y) = Δx * ( y_reta(x) - y )
-```
-
-Ou seja, com `Δx > 0`: se o ponto tem `y` **menor** que o da reta naquela coluna, `F > 0`; se tem `y` maior, `F < 0`. Essa é a alma do algoritmo: **o sinal de F revela a posição relativa de um ponto sem calcular divisão nenhuma**.
-
-### O critério do ponto médio
-
-Assuma por enquanto o caso `0 ≤ Δy ≤ Δx` com `x0 < x1` (inclinação entre 0 e 1, andando para a direita) — já já generalizamos.
-
-Se acabamos de pintar o pixel `P = (xp, yp)`, com essa inclinação o próximo pixel só pode ser um de dois candidatos:
-
-```
-E  = (xp + 1, yp)        →  avança só em x
-NE = (xp + 1, yp + 1)    →  avança em x e em y
-```
-
-Qual escolher? O critério do **ponto médio**: olhamos para o ponto exatamente no meio dos dois candidatos,
-
-```
-M = (xp + 1, yp + 1/2)
-```
-
-e perguntamos de que lado dele a reta passa. Se a reta cruza a coluna `xp + 1` **antes** do ponto médio (`y_reta < yp + 1/2`), o pixel `E` é o mais próximo dela; se cruza **no ponto médio ou depois**, o mais próximo é `NE`.
-
-E como saber de que lado ela passa? Com o sinal de `F`, é claro! Definimos a **variável de decisão**:
-
-```
-d = 2*F(M)
-```
-
-Multiplicamos por 2 só para eliminar a fração `1/2` e manter tudo em inteiros — multiplicar por um número positivo não muda o sinal, então a decisão continua a mesma. Usando a identidade da seção anterior:
-
-```
-d = 2*F(M) = 2*Δx*( y_reta(xp + 1) - (yp + 1/2) )
-```
-
-- **`d < 0`** → a reta cruza antes do ponto médio → escolhemos **E**;
-- **`d ≥ 0`** → a reta cruza no ponto médio ou depois → escolhemos **NE**.
-
-### Tornando tudo incremental
-
-Se calculássemos `d` do zero a cada pixel, ainda teríamos multiplicações no laço. O truque final é perceber que **não precisamos do valor de d — precisamos apenas de quanto ele muda** de um passo para o outro. Expanda `2*F` nos pontos médios consecutivos e subtraia:
-
-- Se escolhemos `E`, o próximo ponto médio é `(xp + 2, yp + 1/2)`:
-
-```
-ΔE = 2*Δy
-```
-
-- Se escolhemos `NE`, o próximo ponto médio é `(xp + 2, yp + 3/2)`:
-
-```
-ΔNE = 2*(Δy - Δx)
-```
-
-- E o valor inicial? O primeiro ponto médio é `(x0 + 1, y0 + 1/2)`, e como `(x0, y0)` está sobre a reta (`F = 0` ali):
-
-```
-d0 = 2*Δy - Δx
-```
-
-Faça essas três substituições no papel e confirme os resultados — é a melhor forma de se convencer de que não há mágica nenhuma.
-
-O saldo final: depois de calcular `d0`, cada pixel custa **uma comparação e uma soma de inteiros**. É por isso que esse algoritmo dominou o hardware gráfico por décadas.
-
-### Generalizando para todas as direções
-
-Nossa derivação assumiu inclinação entre 0 e 1, andando para a direita. Os demais casos saem por simetria, sem matemática nova:
-
-- **Sentido**: guardamos `stepX = ±1` e `stepY = ±1` conforme os sinais de `Δx` e `Δy`, e fazemos as contas com `|Δx|` e `|Δy|`;
-- **Inclinação íngreme (`|Δy| > |Δx|`)**: trocamos os papéis de `x` e `y` — quem avança um pixel por iteração passa a ser o `y`, e é o `x` que fica sujeito à decisão.
-
-> **Atenção à orientação:** no nosso `Canvas`, o eixo y cresce **para baixo** — o pixel `(0, 0)` é o canto superior esquerdo, herança do formato PPM que vimos no dia 1. Nada muda na matemática (as direções ficam por conta de `stepX`/`stepY`), mas lembre disso na hora de escolher as coordenadas dos seus desenhos!
-
-## Criando a classe `Line`
-
-Com a matemática pronta, vamos à nossa primeira extensão concreta de `Object`. Crie `src/objects/line.hpp`:
+Inicialmente, vamos à nossa primeira extensão concreta de `Object`. Crie `src/objects/line.hpp`:
 
 ```cpp
 class Line : public Object {
@@ -368,7 +275,7 @@ class Line : public Object {
 };
 ```
 
-Repare como os conceitos do começo do dia aparecem aqui: `Line` **é um** `Object` — herda `scale` e `thick`, repassa-os ao construtor da base — e é obrigada (pelo `= 0` da base) a implementar `drawObject`. O `override` garante, em tempo de compilação, que estamos de fato sobrescrevendo o método certo.
+Repare como os conceitos do começo do dia aparecem aqui: `Line` **é um** `Object`, então herda `scale` e `thick`, repassa-os ao construtor da base e é obrigada (pelo `= 0` da base) a implementar `drawObject`. O `override` garante, em tempo de compilação, que estamos de fato sobrescrevendo o método certo.
 
 #### Implementando o `drawObject` (`src/objects/line.cpp`)
 
@@ -391,45 +298,16 @@ void Line::drawObject(Canvas &canvas, RGBColor color, DrawMethod method) {
 }
 ```
 
-Vamos ao case do ponto médio, que é a tradução direta da derivação que acabamos de fazer. Abaixo está o esqueleto do ramo de inclinação suave (`|Δy| ≤ |Δx|`) — preencha os TODOs usando o `d0`, o `ΔE` e o `ΔNE` que encontramos:
+Relembrando o caso anterior, o `dx` e `dy` podem ser vistos como:
 
-```cpp
-case DrawMethod::BresenhanMidpoint: {
-    dx = std::abs(dx);
-    dy = std::abs(dy);
+![Dx Dy](imagens/dydx.png "Variações em ambos os eixos")
 
-    canvas.add(Pixel(x, y), color); //> Pinta o primeiro pixel
 
-    if (dy <= dx) { //> Inclinação suave: x avança a cada iteração
-        int d      = /*TODO: valor inicial da decisão (d0)*/;
-        int stepE  = /*TODO: variação de d ao escolher E*/;
-        int stepNE = /*TODO: variação de d ao escolher NE*/;
 
-        while (x != end.x()) {
-            x += stepX;
+#### `DrawMethod::Bresenhan`
 
-            if (/*TODO: qual o critério para escolher E?*/) {
-                /*TODO: atualize d*/
-            }
-            else { //> NE escolhido
-                /*TODO: atualize d... e não esqueça do y!*/
-            }
+Usaremos como forma padrão o `DrawMethod::Bresenhan`.
 
-            canvas.add(Pixel(x, y), color);
-        }
-    }
-    else {
-        /*TODO: inclinação íngreme — espelhe o bloco acima trocando
-                os papéis de x e y (agora quem sempre avança é o y,
-                e o valor inicial vira 2*dx - dy)*/
-    }
-    break;
-}
-```
-
-#### A variante padrão do projeto: `DrawMethod::Bresenhan`
-
-Existe uma forma ainda mais compacta do mesmo algoritmo — e é ela que usamos como padrão no projeto. Em vez de dividir o código em dois ramos (suave/íngreme), ela mantém **um único acumulador de erro** que serve aos dois eixos ao mesmo tempo:
 
 ```cpp
 case DrawMethod::Bresenhan: {
@@ -537,8 +415,6 @@ Como todas as atualizações (`2x + 1`, `-2y + 1`) são inteiras, a fração `1/
 ```
 d0 = 1 - r
 ```
-
-(Se quiser se convencer: escreva `d = h + 1/4` com `h` inteiro e verifique que `d < 0` e `h < 0` decidem sempre igual.)
 
 #### Implementando o `drawObject` (`src/objects/circle.cpp`)
 
