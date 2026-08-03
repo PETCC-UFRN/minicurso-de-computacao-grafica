@@ -15,9 +15,11 @@ namespace pet{
             }
 
             if (/*TODO: ainda estamos dentro?*/) {
+                d += /* TODO */;
                 /*TODO: passo E — atualize d e avance com x*/
             }
             else {
+                d += /* TODO */;
                 /*TODO: passo S — atualize d e desça com y*/
             }
         }

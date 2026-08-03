@@ -660,7 +660,7 @@ class Circle : public Object {
 
 ### Implementando o `drawObject` (`src/objects/circle.cpp`)
 
-A estratégia é a mesma da reta: um erro inteiro, atualizado por soma, decidindo a cada volta qual pixel pintar. Muda só a função que descreve a curva — e ganhamos um bônus que a reta não tinha.
+A estratégia é a mesma da reta: um erro inteiro, atualizado por soma, decidindo a cada volta qual pixel pintar. Muda só a função que descreve a curva.
 
 Sua implementação pode ser dividida como:
 
@@ -681,7 +681,7 @@ void Circle::drawObject(Canvas& canvas, RGBColor color, DrawMethod) {
         }
       }
 
-      // [3] - A decisão: seguir de lado (E) ou descer (S)?
+      // [3] - A decisão entre seguir de lado (E) ou descer (S)?
       if (d < 0) {               //> LESTE — o ponto médio ainda está DENTRO da
                                  //  circunferência, então dá para continuar na
                                  //  horizontal. O y fica parado.
@@ -719,7 +719,7 @@ E o valor inicial é `d = 1 - r`. Ele vem de avaliar `F` no primeiro ponto médi
 
 #### Por que basta calcular um oitavo?
 
-A circunferência é simétrica em oito direções: se `(x, y)` pertence a ela, então `(±x, ±y)` e `(±y, ±x)` também pertencem.
+A circunferência é simétrica em oito direções, então se `(x, y)` pertence a ela, `(±x, ±y)` e `(±y, ±x)` também pertencem.
 
 Isso significa que basta percorrer **um octante** e refletir cada ponto calculado para os outros sete, somando o centro `(cx, cy)` na hora de pintar:
 
@@ -778,7 +778,7 @@ Circunferência de raio `5`. Estado inicial: `x = 0`, `y = 5`, `d = 1 - 5 = -4`.
 | 4 | 2 | 4 | -9 | sim | **E** | `3, 4` | -4 |
 | 5 | 3 | 4 | -4 | sim | **E** | `4, 4` | 3 |
 
-Na volta 5, `x` vira `4` e alcança o `y`. Como `y > x` deixa de ser verdadeiro, o laço termina — cinco voltas desenharam a circunferência inteira, porque cada uma pintou oito pixels.
+Na volta 5, `x` vira `4` e alcança o `y`. Como `y > x` deixa de ser verdadeiro e o laço termina. Assim, cinco voltas desenharam a circunferência inteira, porque cada uma pintou oito pixels.
 
 O resultado, com centro em `(6, 6)`:
 
@@ -865,6 +865,7 @@ A classe inteira herda o `drawObject` **pronto** de `Polyline` e só precisa gar
 
 ## Juntando tudo: nossa primeira cena polimórfica
 
+
 Como todas as formas **são** `Object`s, podemos guardá-las juntas e desenhá-las num único laço:
 
 ```cpp
@@ -879,6 +880,8 @@ using namespace pet;
 
 int main() {
     Canvas canvas(800, 400, "result.ppm");
+
+    /* Você pode escolher usar a main que já está no repositório... */
 
     //> Pintando o fundo, como fizemos no dia 1
     Background bkg(RGBColor(30, 30, 46, "rgb"));
@@ -903,7 +906,7 @@ int main() {
 }
 ```
 
-Cada chamada `obj->drawObject(...)` decide **em tempo de execução** qual implementação rodar. Se amanhã criarmos uma forma nova, esse laço não muda uma linha sequer, bastando a nova classe herdar de `Object` e implementar seus métodos.
+Note que cada chamada `obj->drawObject(...)` decide **em tempo de execução** qual implementação rodar. Se amanhã criarmos uma forma nova, esse laço não muda uma linha sequer, bastando a nova classe herdar de `Object` e implementar seus métodos.
 
 ## Exercícios
 
@@ -943,3 +946,6 @@ Agora uma cena que use **todas** as classes do dia:
 ## Referências
 
 - SHIRLEY, Peter et al. **Fundamentals of Computer Graphics**, third edition.
+
+ ## Créditos:
+ Usei imagens do vídeo: `https://www.youtube.com/watch?v=CceepU1vIKo`
