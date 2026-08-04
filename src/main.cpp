@@ -13,13 +13,12 @@ void demo();
 
 int main(int argc, char **argv) {
 
+  const std::string arg = argv[1];
   if (argc < 2) { // 1 argumentos
     ITerm iterm(800, 400, "result.ppm");
     iterm.run();
     return 0;
   } else if (argc == 2) {
-    const std::string arg = argv[1] ? "" : argv[1];
-
     if (arg == "demo") {
       demo();
       return 0;
@@ -42,17 +41,18 @@ void demo() {
     for (int i = 0; i < 800; ++i)
       canvas.add(Pixel(i, j), bkg.sample(double(i) / 800.0, double(j) / 400.0));
 
-  Line line(Point2(400, 0), Point2(800, 400));
-  Line line2(Point2(400, 400), Point2(600, 0));
-  Circle circle(80, Point2(400, 200));
-  Circle circle2(90, Point2(400, 200));
+  Line line(Point2(0, 0), Point2(800, 400));
+  // Line line2(Point2(400, 400), Point2(600, 0));
+  // Circle circle(80, Point2(400, 200));
+  // Circle circle2(90, Point2(400, 200));
 
-  line.drawObject(canvas, RGBColor(255, 255, 255, "rgb"),
-                  DrawMethod::XiaolinWu);
-  line2.drawObject(canvas, RGBColor(255, 255, 255, "rgb"),
-                   DrawMethod::XiaolinWu);
-  circle.drawObject(canvas, RGBColor(188, 0, 45, "rgb"));
-  circle2.drawObject(canvas, RGBColor(0, 0, 0, "rgb"), DrawMethod::XiaolinWu);
+  line.drawObject(canvas, RGBColor(0, 0, 0, "rgb"),
+                  DrawMethod::Bresenhan);
+  // line2.drawObject(canvas, RGBColor(255, 255, 255, "rgb"),
+  //                  DrawMethod::XiaolinWu);
+  // circle.drawObject(canvas, RGBColor(188, 0, 45, "rgb"));
+  // circle2.drawObject(canvas, RGBColor(0, 0, 0, "rgb"),
+  // DrawMethod::XiaolinWu);
 
   canvas.export_img();
 
