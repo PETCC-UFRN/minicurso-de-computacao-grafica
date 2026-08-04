@@ -1,0 +1,10 @@
+<PEinT>
+
+  <canvas filename="br_flag.png" size="800 400" background="0 255 0"/>
+
+  <square center="400 200" size="200" fill="255 255 0"/>
+
+  <circle radius="80" center="380 200" fill="0 0 255"/>
+
+</PEinT>
+
