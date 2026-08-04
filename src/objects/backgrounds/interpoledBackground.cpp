@@ -8,14 +8,19 @@ namespace pet{
     
     // Sample and returns a color, based on the raster coordinate.
     RGBColor InterpoledBackground::sample(double u, double v) const {  
-        /*TODO*/
+        const auto lerp =
+            linear_interpolation(m_corners[0], m_corners[1], u);
+
+         return lerp;
     };
 
     // Return the linearly interpolated color in [A;B], based on the parameter
     RGBColor InterpoledBackground::linear_interpolation(const RGBColor &A, const RGBColor &B,
                                           double t) {    
                                                     
-        /*TODO*/
-    };
+        return RGBColor{static_cast<double>((1 - t) * A.red + t * B.red),
+                        static_cast<double>((1 - t) * A.green + t * B.green),
+                        static_cast<double>((1 - t) * A.blue + t * B.blue)};
+            };
 
 }

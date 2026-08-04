@@ -1,5 +1,4 @@
 #include "polyline.hpp"
-#include "line.hpp"
 
 namespace pet{
     void Polyline::drawObject(Canvas& canvas, RGBColor color, DrawMethod method) {
