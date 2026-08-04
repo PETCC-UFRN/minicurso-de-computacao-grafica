@@ -4,7 +4,7 @@ namespace pet{
         void Circle::drawObject(Canvas& canvas, RGBColor color, DrawMethod) {
         int x = 0;
         int y = radius;
-        int d = /*TODO: valor inicial da decisão*/;
+        int d = 0;/*TODO: valor inicial da decisão*/;
 
         while (y > x) { //> Percorremos um único octante — a simetria faz o resto!
             for (int i{-1}; i <= 1; i += 2) {
@@ -13,13 +13,13 @@ namespace pet{
                     canvas.add(Pixel(center.x() + y * i, center.y() + x * j), color);
                 }
             }
-
-            if (/*TODO: ainda estamos dentro?*/) {
-                d += /* TODO */;
+          /*TODO: ainda estamos dentro?*/
+            if (false) {
+                d += 0;/* TODO */;
                 /*TODO: passo E — atualize d e avance com x*/
             }
             else {
-                d += /* TODO */;
+                d += 0;/* TODO */;
                 /*TODO: passo S — atualize d e desça com y*/
             }
         }
