@@ -2,6 +2,7 @@
 #include "canvas.hpp"
 #include "common.hpp"
 #include "floodFill.hpp"
+#include "iterm.hpp"
 #include "parser.hpp"
 
 #include <string>
@@ -11,17 +12,22 @@ using namespace pet;
 void demo();
 
 int main(int argc, char **argv) {
-  // ITerm it(800, 400, "result.ppm");
-  // it.run();
 
-  const std::string arg = argv[1];
-
-  if (arg == "demo") {
-    demo();
+  if (argc < 2) { // 1 argumentos
+    ITerm iterm(800, 400, "result.ppm");
+    iterm.run();
     return 0;
+  } else if (argc == 2) {
+    const std::string arg = argv[1] ? "" : argv[1];
+
+    if (arg == "demo") {
+      demo();
+      return 0;
+    }
+
+    render(arg);
   }
 
-  render(argv[1]);
   return 0;
 }
 
