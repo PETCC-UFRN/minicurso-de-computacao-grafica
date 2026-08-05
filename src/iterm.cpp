@@ -95,8 +95,6 @@ void ITerm::setupCommands() {
   m_commandMap["e"] = &ITerm::exit;
   m_commandMap["rollback"] = &ITerm::rollback;
   m_commandMap["r"] = &ITerm::rollback;
-  m_commandMap["scanline"] = &ITerm::scanLineFill;
-  m_commandMap["sl"] = &ITerm::scanLineFill;
   m_commandMap["flood"] = &ITerm::floodFill;
   m_commandMap["ff"] = &ITerm::floodFill;
   m_commandMap["background"] = &ITerm::background;
@@ -112,8 +110,6 @@ void ITerm::setupCommands() {
   m_createMap["l"] = &ITerm::createLine;
   m_createMap["lineAA"] = &ITerm::createAALine;
   m_createMap["lAA"] = &ITerm::createAALine;
-  m_createMap["ellipse"] = &ITerm::createEllipse;
-  m_createMap["e"] = &ITerm::createEllipse;
   m_createMap["polygon"] = &ITerm::createPolygon;
   m_createMap["po"] = &ITerm::createPolygon;
   m_createMap["polyline"] = &ITerm::createPolyline;
