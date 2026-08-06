@@ -18,14 +18,21 @@ namespace pet {
 		}
     }
 
+	/// Note que a transformação de escala e cisalhamento não funcionaria nessa classe, caso queira que funcione,
+	/// você tem muitas opções:
+	/// 1. Fazer a Circle extender uma Curva de Bezier e implementar algo similar com seus pontos de controle
+	/// 2. Aplicar a transformação no Raio (cisalhamento não funcionaria ainda) (precisaria implementar um outro método na classe Transform)
+	/// 3. Implementar a classe de outra forma.
+	/// Como da muito trabalho, essa parte será um EXTRA. Apenas aplique a transformação no centro.
     void Circle::transform(const Transform& transformation)
     {
-		//TODO: missing
-    }
+		/*TODO: Aplicar a transformação no Centro */
+	}
 
     Point2 Circle::getAxis() const
     {
-		//TODO: missing
+		/*TODO: Retornar o ponto de controle da circunferência */
+		/*      Nesse caso... Segue o padrão dos outros, você sabe qual é*/
     }
 
 	void Circle::drawBresenhan(int radius, Canvas& canvas, RGBColor color) {

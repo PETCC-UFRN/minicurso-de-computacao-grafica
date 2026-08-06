@@ -10,9 +10,8 @@ namespace pet {
       *
       */
     class Transform {
-        private:
-            Mat3 mat; //< Matriz de transformação
         public:
+            Mat3 mat; //< Matriz de transformação
             Transform();                           //< Construtor Padrão
             Transform(const Transform&) = default; //< Construtor de Cópia
             Transform(const Mat3&);                //< Construtor Parametrizado
@@ -37,26 +36,32 @@ namespace pet {
               * @param axis Eixo de escala do objeto
               */
             void scale(double deltax, double deltay, Point2 axis);
+            
             /**
               * @brief Função que adiciona o fator de Cisalhamento na matriz de transformação
               * @param s Variação do cisalhamento
               * @param axis Eixo de escala do objeto
+              * @details Essa função não precisa ser implementada, é um >EXTRA<
               */
             void shear(double s, Point2 axis);
 
             /**
               * @brief Função que adiciona o fator Reflexão no eixo X na matriz de transformação
+              * @details Essa função não precisa ser implementada, é um >EXTRA<
               */
             void reflectX();
 
             /**
               * @brief Função que adiciona o fator Reflexão no eixo Y na matriz de transformação
+              * @details Essa função não precisa ser implementada, é um >EXTRA<
               */
             void reflectY();
 
             /**
               * @brief Função que adiciona o fator Reflexão com base em um eixo na matriz de transformação
               * @param axis Eixo de reflexão do objeto
+              *
+              * @details Essa função não precisa ser implementada, é um >EXTRA<
               */
             void reflect(Point2 axis);
 

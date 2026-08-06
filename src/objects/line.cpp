@@ -237,11 +237,12 @@ void Line::drawXiaolinWu(Point2 p1, Point2 p2, Canvas &canvas, RGBColor color) {
 }
 
 void Line::transform(const Transform &transformation) {
-		//TODO: missing
+		/*TODO: Aplicar a transformação em "cada ponto da reta"*/
 }
 
 Point2 Line::getAxis() const {
-		//TODO: missing
+		/*TODO: Retornar o ponto de controle da Line */
+    /*      Nesse caso, o ponto médio da reta*/
 }
 
 } // namespace pet

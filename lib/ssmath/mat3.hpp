@@ -60,8 +60,8 @@ class mat3 {
               *          dígito indica a linha e o segundo a coluna (ex: e12 é linha 1, coluna 2).
               */
             constexpr mat3(T e00, T e01, T e02, 
-                 T e10, T e11, T e12,
-                 T e20, T e21, T e22) : mat{e00, e01, e02, e10, e11, e12, e20, e21, e22}{}
+                           T e10, T e11, T e12,
+                           T e20, T e21, T e22) : mat{e00, e01, e02, e10, e11, e12, e20, e21, e22}{}
 
             /**
               * @brief Constrói uma matriz 3x3 a partir de três vetores vec3.

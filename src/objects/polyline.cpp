@@ -18,11 +18,12 @@ namespace pet{
 
     void Polyline::transform(const Transform& transformation) 
     {
-		//TODO: missing
+      /*TODO: Aplicar a transformação em todos os Pontos*/
     }
 
     Point2 Polyline::getAxis() const
     {
-		//TODO: missing
+      /*TODO: Retornar o ponto de controle da Polyline */
+      /*      Nesse caso, o ponto centroide (ou "ponto central do objeto")*/
     }
 }
