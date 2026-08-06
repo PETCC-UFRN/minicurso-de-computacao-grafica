@@ -144,7 +144,6 @@ Note que, a matriz resultante com $45⁰$  iria ser:
 ```
 Caso queira replicar essa matriz em c++, lembre-se de que você deverá alterar o valor de $45⁰$ para $π/4$
 
-
 ![rotation](./assets/dia_4/rotacao.png "Rotação por 45 graus em torno da origem")
 
 \
@@ -185,8 +184,8 @@ Abaixo temos dois exemplos de mudança de escala utilizando algumas matrizes esp
 \
 O primeiro exemplo utiliza uma mudança de escala simétrica, então acaba que não deforma tanto a imagem original, porém, na segunda temos:
 
-\
-![scale](./assets/dia_4/escala2.png "Mudança de escala com dx = 0.5 e dy = 0.5")
+
+![scale2](./assets/dia_4/escala2.png "Mudança de escala com dx = 0.5 e dy = 0.5")
 
 \
 Exatamente por terem pesos diferentes, a imagem acaba sendo deformada.
@@ -196,7 +195,7 @@ E, assim como na rotação, o método `scale` também recebe um `axis`, pois nor
 
 A imagem abaixo mostra essa aplicação funcionando:
 
-\
+
 <img src="./assets/dia_4/transscaletrans.png" alt="Processo de transladar, escalar e transladar de volta o objeto"  style="display: block; margin: 0 auto">
 \
 A mesma técnica usada para resolver o problema do pivô na rotação deve ser reaproveitada aqui, trocando apenas a matriz do meio (de rotação para escala).
