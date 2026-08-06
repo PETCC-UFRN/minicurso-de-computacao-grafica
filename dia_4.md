@@ -34,9 +34,9 @@ Quando se tratam de projetos pequenos como este, o cálculo é simples. Porém, 
 
 Uma Transformação Geométrica é, em resumo, uma função que recebe um ponto (ou um conjunto de pontos) e devolve um novo ponto (ou conjunto de pontos) com alguma alteração espacial definida previamente.
 
-As três transformações que vamos implementar hoje pertencem a uma categoria chamada **Transformações Afins**, que têm uma propriedade fundamental: retas continuam retas, e proporções entre pontos colineares são preservadas. 
+Algumas transformações que vamos implementar hoje pertencem a uma categoria chamada **Transformações Lineares**, que têm uma propriedade fundamental: retas continuam retas, e proporções entre pontos colineares são preservadas. 
 
-Translação, rotação e escala são os três exemplos clássicos de transformação afim.
+Rotação e escala são os três exemplos clássicos de transformação afim.
 
 ### Por que não usar apenas funções soltas?
 
@@ -180,13 +180,13 @@ Assim como na rotação, isso também pode ser escrito como uma matriz 3x3.
 
 Abaixo temos dois exemplos de mudança de escala utilizando algumas matrizes específicas:
 
-<img src="./assets/dia_4/escala1.png" alt="Mudança de escala com dx = 0.5 e dy = 0.5" width="600" style="display: block; margin: 0 auto">
+<img src="./assets/dia_4/escala1.png" alt="Mudança de escala com dx = 0.5 e dy = 0.5" style="display: block; margin: 0 auto">
 
 \
 O primeiro exemplo utiliza uma mudança de escala simétrica, então acaba que não deforma tanto a imagem original, porém, na segunda temos:
 
 \
-<img src="./assets/dia_4/escala2.png" alt="Mudança de escala com dx = 0.5 e dy = 1.5" width="600" style="display: block; margin: 0 auto">
+<img src="./assets/dia_4/escala2.png" alt="Mudança de escala com dx = 0.5 e dy = 1.5" style="display: block; margin: 0 auto">
 
 \
 Exatamente por terem pesos diferentes, a imagem acaba sendo deformada.
@@ -197,7 +197,7 @@ E, assim como na rotação, o método `scale` também recebe um `axis`, pois nor
 A imagem abaixo mostra essa aplicação funcionando:
 
 \
-<img src="./assets/dia_4/transscaletrans.png" alt="Processo de transladar, escalar e transladar de volta o objeto" width="600" style="display: block; margin: 0 auto">
+<img src="./assets/dia_4/transscaletrans.png" alt="Processo de transladar, escalar e transladar de volta o objeto"  style="display: block; margin: 0 auto">
 \
 A mesma técnica usada para resolver o problema do pivô na rotação deve ser reaproveitada aqui, trocando apenas a matriz do meio (de rotação para escala).
 
