@@ -144,8 +144,8 @@ Note que, a matriz resultante com $45⁰$  iria ser:
 ```
 Caso queira replicar essa matriz em c++, lembre-se de que você deverá alterar o valor de $45⁰$ para $π/4$
 
-\
-<img src="./assets/dia_4/rotacao.png" alt="Rotação por 45 graus em torno da origem" width="600" style="display: block; margin: 0 auto">
+
+![rotation](./assets/dia_4/rotacao.png "Rotação por 45 graus em torno da origem")
 
 \
 Só que, no nosso projeto, o método `rotate` recebe um parâmetro extra chamado `axis`, do tipo `Point2`. Isso acontece porque, na prática, quase nunca queremos rotacionar um objeto em torno da origem `(0, 0)` — normalmente queremos rotacioná-lo em torno de algum ponto de referência (seu centro, por exemplo). Esse ponto de referência é chamado de **pivô**.
@@ -180,13 +180,13 @@ Assim como na rotação, isso também pode ser escrito como uma matriz 3x3.
 
 Abaixo temos dois exemplos de mudança de escala utilizando algumas matrizes específicas:
 
-<img src="./assets/dia_4/escala1.png" alt="Mudança de escala com dx = 0.5 e dy = 0.5" style="display: block; margin: 0 auto">
 
+![scale](./assets/dia_4/escala1.png "Mudança de escala com dx = 0.5 e dy = 0.5")
 \
 O primeiro exemplo utiliza uma mudança de escala simétrica, então acaba que não deforma tanto a imagem original, porém, na segunda temos:
 
 \
-<img src="./assets/dia_4/escala2.png" alt="Mudança de escala com dx = 0.5 e dy = 1.5" style="display: block; margin: 0 auto">
+![scale](./assets/dia_4/escala2.png "Mudança de escala com dx = 0.5 e dy = 0.5")
 
 \
 Exatamente por terem pesos diferentes, a imagem acaba sendo deformada.
