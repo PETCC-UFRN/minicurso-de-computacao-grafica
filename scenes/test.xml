@@ -1,0 +1,15 @@
+<PEinT>
+
+  <canvas filename="test.png" size="800 400" />
+  <circle radius="55" center="150 200" fill="220 60 60"/>
+
+  <!-- quadrado girado 30 graus em torno do proprio centro -->
+  <polygon points="330 140 470 140 470 280 330 280" fill="255 200 0"/>
+  <rotate deg="30"/>
+
+  <!-- elipse transladada e depois escalada (a ordem importa) -->
+  <ellipse radii="70 40" center="0 0" fill="90 200 120"/>
+  <translate by="650 200"/>
+  <scale by="1.3 0.8"/>
+
+</PEinT>

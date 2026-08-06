@@ -1,0 +1,8 @@
+build/
+compile_commands.json
+.cache/
+*.png
+*.ppm
+.vscode/
+_build/
+.venv/

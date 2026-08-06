@@ -1,0 +1,10 @@
+<PEinT>
+  <canvas filename="rotated_ellipse.png" size="800 400" />
+  <!-- ESQUERDA: elipse como poligono de 24 lados, girada de verdade -->
+  <polygon points="400 200 395 218 380 235 356 250 325 261 289 268 250 270 211 268 175 261 144 250 120 235 105 218 100 200 105 182 120 165 144 150 175 139 211 132 250 130 289 132 325 139 356 150 380 165 395 182" fill="90 200 120"/>
+  <rotate deg="40" pivot="250 200"/>
+
+  <!-- DIREITA: elipse nativa girada -> ENCOLHE por cos(theta), nao inclina -->
+  <ellipse radii="150 70" center="580 200" fill="200 120 90"/>
+  <rotate deg="40"/>
+</PEinT>
