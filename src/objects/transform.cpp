@@ -11,9 +11,13 @@ namespace pet {
 
         double radians = degrees * (M_PI/180.); //< Conversão do ângulo para radianos (utilize ele para as funções trigonométricas)
 
-        Mat3 rotMat; //< Matriz de rotação 
+        Mat3 rotMat = Mat3(
+                            std::cos(radians), -std::sin(radians), 0.,
+                            std::sin(radians), std::cos(radians), 0.,
+                                0.              , 0.                   , 1
     
-        /*TODO: Definir a matriz rotMat*/
+                           )
+        ; //< Matriz de rotação 
 
         Mat3 toOrigin = Mat3(); //< Matriz de translação do 'ponto' para o 'axis'   
 
@@ -23,7 +27,7 @@ namespace pet {
 
         /*TODO: Definir a matriz fromOrigin*/
         
-        Mat3 pivot /* = TODO: Compor as matrizes. >CUIDADO COM A ORDEM<*/;  //< Composição entre as 3 transformações
+        Mat3 pivot = fromOrigin * rotMat * toOrigin;  //< Composição entre as 3 transformações
         this->mat = mat * pivot;
     }
 
@@ -53,6 +57,8 @@ namespace pet {
     void Transform::scale(double deltax, double deltay, Point2 axis)
     {
         Mat3 scaleMat = Mat3();//< Adicionar o fator de 's' para a escala
+        scaleMat(0, 0) = deltax;
+        scaleMat(1, 1) = deltay;
 
         /*TODO: Definir a matriz scaleMat*/
 
@@ -62,9 +68,9 @@ namespace pet {
 
         Mat3 fromOrigin = Mat3();//< Matriz de translação do 'axis' de volta para o 'ponto'
 
-        /*TODO: Definir a matriz fromOrigin*/        //< Composição entre as 3 transform
+        /*TODO: Definir a matriz fromOrigin*/        
 
-        Mat3 pivot /* = TODO: Compor as matrizes. >CUIDADO COM A ORDEM<*/;  //< Composição entre as 3 transformações
+        Mat3 pivot = fromOrigin * scaleMat * toOrigin;  //< Composição entre as 3 transformações
         this->mat = mat * pivot;
     }
     
@@ -122,19 +128,18 @@ namespace pet {
 
     Point2 Transform::operator*(const Point2& p) const
     {
-        Point3 point; //< Ponto 'p' representado por coordenadas homogêneas
+        Point3 point = Point3(static_cast<double>(p.x()), static_cast<double>(p.y()), 1.); //< Ponto 'p' representado por coordenadas homogêneas
         
-        /*TODO: Colocar o valor de 'point'*/
-        /*TODO: Aplicar a matriz no ponto 'point'*/
-        
-        Point2 finalP; //< Ponto 'p' após a transformação
-        /*TODO: Transformar o Ponto 'point' de volta para o tipo Point2*/
+        point = this->mat * point;
+  
+        Point2 finalP = Point2(std::round(point.x()), std::round(point.y())); //< Ponto 'p' após a transformação
+         
         return finalP;
     }
 
     Transform Transform::operator*(const Transform& t) const
     {
-        return Transform(/*TODO: Matrizes 'mat' e 't.mat' compostas*/);
+        return Transform(this->mat * t.mat);
     }
 
 }
