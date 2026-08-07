@@ -335,4 +335,4 @@ E não custa avisar que:
 - É necessário 75% de presença para emitir o certificado
 - Toda aula teve 2 listas de chamada
 - A segunda presença do dia 5 consiste na apresentação do projeto final
-
+- Caso o aluno não tenha apresentado presencialmente o projeto, por favor enviar os `.xml` e o script adaptado para o email petcc@dimap.ufrn.br até dia **14 de agosto de 2026 às 23:59**
