@@ -3,5 +3,9 @@
 
 namespace pet
 {
-    /*TODO*/
+    Background::Background(RGBColor color) : color(color) {};
+    RGBColor Background::sample(double, double) const
+    {
+        return color;
+    }
 }
