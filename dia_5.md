@@ -267,7 +267,12 @@ Para gerar essas imagens vocês vão precisar:
 
 ## Bash
 
-A cena mostrada como exemplo consiste em 3 arquivos `.xml`: Boneco normal, Boneco sorrindo acenando para um lado, Boneco sorrindo acenando para o outro lado. Mas a forma como eles são dispostos segue a seguinte ordem:
+A cena mostrada como exemplo consiste em 3 arquivos `.xml`: 
+- Boneco normal
+- Boneco sorrindo acenando para um lado
+- Boneco sorrindo acenando para o outro lado. 
+
+Mas a forma como eles são dispostos segue a seguinte ordem:
 
 - `scenes/boneco_1.xml` (normal)
 - `scenes/boneco_2.xml` (sorrindo acenando para um lado)
@@ -325,3 +330,9 @@ chmod +x script.sh
 ## Agora é com vocês!
 
 Não se esqueçam de [**avaliar**](https://forms.gle/LRTigAKq2RJa3VsE7) o curso! Nos ajuda demais e é uma pesquisa de satisfação rápida e anônima, então não tem desculpa para não responder 😉.
+
+E não custa avisar que:
+- É necessário 75% de presença para emitir o certificado
+- Toda aula teve 2 listas de chamada
+- A segunda presença do dia 5 consiste na apresentação do projeto final
+
