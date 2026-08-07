@@ -242,15 +242,8 @@ void polygon(XMLElement *elem) {
   }
 
   SceneOp scop;
-  unsigned int thickness;
-
-  if (elem->QueryUnsignedAttribute("thickness", &thickness) == XML_SUCCESS) {
-    scop.shape = std::make_unique<Polyline>(points, Point2(1,1), thickness);
-    sc.push_back(std::move(scop));
-    return;
-  }
-
   scop.shape = std::make_unique<Polygon>(points);
+  scop.fill = getFill(elem);
   sc.push_back(std::move(scop));
 }
 
