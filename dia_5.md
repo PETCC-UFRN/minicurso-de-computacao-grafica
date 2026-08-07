@@ -18,7 +18,7 @@ Mas antes de chegarmos nas definições formais, vamos pensar no básico de filt
 
 De maneira geral, filtros funcionam a partir da avaliação de cada pixel da imagem inicial para gerarmos uma imagem final. Assim, para cada pixel da figura inicial, estaremos fazendo alguma operação para gerarmos o seu valor equivalente. Mas, como queremos extrair algum tipo de informação das nossas imagens durante esse processo, concorda que precisamos estar levando em consideração, de certa forma, os "arredores" de cada ponto? Por exemplo: digamos que você está fazendo um filtro de identificação de bordas, e busca resultados como o abaixo
 
-<img src="./assets/dia_5/sobel.png" alt="imagem com filtro de sobel" width="400" style="display: block; margin: 0 auto">
+<img src="./assets/dia_5/sobel.png" alt="imagem com filtro de sobel" width="600" style="display: block; margin: 0 auto">
 
 
 Para que identifiquemos alguma relação do pixel com os seus arredores, precisamos considerar algum tipo de "vizinhança", para que possamos entender o papel desse pixel em seus arredores.
@@ -65,7 +65,7 @@ Nessa categoria, vamos implementar apenas um filtro de mediana, mas existem vár
 
 Antes da implementação, vamos pensar no seu funcionamento. Muitas vezes, durante o processo de aquisição de imagens ou transmissão desses sinais, os resultados são distintos do que queremos e apresentam ruídos. Alguns dos tipos de ruídos mais comuns são conhecidos como "sal", "pimenta" e "sal e pimenta"
 
-<img src="./assets/dia_5/saltnpepa.png" alt="imagem com ruído sal e pimenta" width="400" style="display: block; margin: 0 auto">
+<img src="./assets/dia_5/saltnpepa.png" alt="imagem com ruído sal e pimenta" width="600" style="display: block; margin: 0 auto">
 
 
 Como é bem perceptível, esse tipo de ruído trata-se de pontos brancos e/ou pretos que aparecem ao longo da imagem de maneira aleatória. Esse tipo de _noise_ aparece, muitas vezes, por causa de sensores defeituosos, problemas de hardware ou na transmissão de dados (perda de dados). Para casos como esse, aplicamos um filtro de mediana! Ele é um dos filtros mais comuns (e efetivos) para a remoção desse tipo de ruído, e agora vamos entender o porquê.
@@ -137,17 +137,17 @@ Imagine que você está jogando algum jogo (como Catan!) e quer calcular a proba
 
 Vamos tentar visualizar, então, todas as possíveis faces de um dado enfileiradas (como temos 2 dados, teremos 2 fileiras!).
 
-<img src="./assets/dia_5/dice.png" alt="dados enfileirados" width="400" style="display: block; margin: 0 auto">
+<img src="./assets/dia_5/dice.png" alt="dados enfileirados" width="600" style="display: block; margin: 0 auto">
 
 
 Note que, ao girar uma dessas fileiras 180 graus e alinhando as duas fileiras de acordo com alguma face, estaremos gerando todas as possibilidades de somar algum resultado x!!
 
-<img src="./assets/dia_5/dice2.png" alt="dados enfileirados" width="400" style="display: block; margin: 0 auto">
+<img src="./assets/dia_5/dice2.png" alt="dados enfileirados" width="600" style="display: block; margin: 0 auto">
 
 É claro que, com o uso de um dado não viciado, os resultados não vão nos trazer nada tão interessante (só aquela típica escadinha até atingirmos o ápice da função resultante, na probabilidade 7). Mas é interessante perceber o comportamento dessa função resultante com base em diferentes probabilidades de cada face de um dado.
 
-<img src="./assets/dia_5/conv-func-1.gif" alt="convolução entre duas funçoes" width="400" style="display: block; margin: 0 auto">
-<img src="./assets/dia_5/conv-func-2.gif" alt="convolução entre duas funçoes" width="400" style="display: block; margin: 0 auto">
+<img src="./assets/dia_5/conv-func-1.gif" alt="convolução entre duas funçoes" width="600" style="display: block; margin: 0 auto">
+<img src="./assets/dia_5/conv-func-2.gif" alt="convolução entre duas funçoes" width="600" style="display: block; margin: 0 auto">
 
 
 Note que, na situação em que um dos dados é não viciado, a função resultante tem valores que assemelham a uma _"moving average"_, ou "média que se movimenta". No fim das contas, como isso é um dado, - e as probabilidades sempre somarão 1 - a função final será uma _"moving average"_, mas, dessa vez, uma média ponderada. (Vamos retomar essa observação mais à frente)
@@ -161,11 +161,11 @@ Claramente estamos exemplificando (e vamos focar durante o resto do dia) com um 
 
 Representamos as convoluções entre duas funções _f_ e _g_ como _f * g_, ou "f estrela g". Num espaço contínuo, _f * g_ pode ser definido como a integral do produto das funções após a reflexão de uma delas no eixo y e o decorrido deslocamento.
 
-<img src="./assets/dia_5/conv-cont.png" alt="definição formal de uma convolução contínua" width="400" style="display: block; margin: 0 auto">
+<img src="./assets/dia_5/conv-cont.png" alt="definição formal de uma convolução contínua" width="600" style="display: block; margin: 0 auto">
 
 Masss aqui queremos dar atenção ao caso discreto (as imagens que estamos trabalhando com são discretas!!), que pode ser representado da seguinte forma:
 
-<img src="./assets/dia_5/conv-disc.png" alt="definição formal de uma convolução contínua" width="400" style="display: block; margin: 0 auto">
+<img src="./assets/dia_5/conv-disc.png" alt="definição formal de uma convolução contínua" width="600" style="display: block; margin: 0 auto">
 
 E isso pode parecer um pouco assustador, mas é exatamente aquilo que vimos na seção anterior: a soma de uma multiplicação ponto-a-ponto entre funções, com uma delas sendo cada vez mais deslocada. Daqui em diante, tentaremos imaginar a nossa primeira função como o nosso canvas principal, enquanto a função deslocada será referida como _kernel_. 
 
@@ -180,13 +180,13 @@ Agora que temos a definição formal, podemos imaginar como seria a aplicação 
 
 Quando olhamos a imagem resultante, conseguimos fazer entender o que vemos:
 
-<img src="./assets/dia_5/box-blur.jpg" alt="filtro de média / box blur" width="400" style="display: block; margin: 0 auto">
+<img src="./assets/dia_5/box-blur.jpg" alt="filtro de média / box blur" width="600" style="display: block; margin: 0 auto">
 
 A imagem aparenta estar mais "borrada", de certa forma. E isso faz muito sentido! Estamos atualizando o valor do nosso pixel pra um valor que também considere todos os pixels em seus arredores - ou seja, uma média de todos os pixels ao seu redor. No fim das contas, estamos "suavizando" a influência do píxel em questão. Além disso, detalhes específicos serão, de certa forma, "apagados" ou "suavizados" se existir uma região relativamente homogênea na sua vizinhança.
 
-<img src="./assets/dia_5/box-blur-homogeneo.png" alt="visualização de um box blur sobre uma região homogênea" width="400" style="display: block; margin: 0 auto">
+<img src="./assets/dia_5/box-blur-homogeneo.png" alt="visualização de um box blur sobre uma região homogênea" width="600" style="display: block; margin: 0 auto">
 
-<img src="./assets/dia_5/box-blur-nhomogeneo.png" alt="visualização de um box blur sobre uma região não homogênea" width="400" style="display: block; margin: 0 auto">
+<img src="./assets/dia_5/box-blur-nhomogeneo.png" alt="visualização de um box blur sobre uma região não homogênea" width="600" style="display: block; margin: 0 auto">
 
 Isso é o que chamamos de _"box blur"_. Note que o resultado final aparenta bem pixelado para nós! (decorrente dos pesos iguais)
 
@@ -247,14 +247,81 @@ Por último, vamos tentar mais um kernel:
 Esse é conhecido como um filtro de sharpening, ou _aguçamento_. Note que ele traz a ideia de "distanciar" o pixel central dos pixels ao seu redor! Por isso, conseguimos notar que as características ficaram mais distintas e destacadas!
 
 
-## Atividade final
+# Projeto Final
 
+Chegamos ao fim do conteúdo desse curso. Ao longo desses 5 dias entendemos e implementamos várias coisas legais. Agora, a proposta consiste em usar a sua criatividade para fazer um vídeo(ou um **gif**) legal usando o projeto. Algo tipo assim:
 
-Agora que os seus rasterizadores já estão munidos de várias operações, chegou a hora de testar os seus conhecimentos! Juntem-se em grupos de 3 ou 4 pessoas e gerem imagens sequenciais (de maneira a formarem vídeos) sobre o que quiserem - deixem a sua criatividade falar mais alto! (mas tentem usar várias das ferramentas desenvolvidas por vocês ao longo desses 5 dias! e nada estranho, por favor).
+```{image} assets/dia_5/output.gif
+:alt: Exemplo do rasterizador desenvolvido durante o curso
+:width: 600px
+:align: center
+```
 
-Faltando 30 minutos para o fim da aula, pediremos para todos os grupos apresentarem as suas obras primas! Essa atividade vai valer como avaliação final desse minicurso, então se esforcem!!!!!
+Note que esse **GIF** é um mero compilado feito a partir de 3 imagens diferentes, e vocês **com certeza** conseguem fazer muito melhor que isso!
 
-Qualquer coisa que precisarem, estaremos aqui :D
+Para gerar essas imagens vocês vão precisar:
+- Pensar em algo legal que vocês queiram animar
+- "Quebrar" essa cena em vários frames
+- Descrever esses frames através de um arquivo `.xml`(consultem os exemplos disponíveis em `/scenes`)
+- Adaptar o `script.sh` para renderizar a sua cena
 
+## Bash
 
+A cena mostrada como exemplo consiste em 3 arquivos `.xml`: Boneco normal, Boneco sorrindo acenando para um lado, Boneco sorrindo acenando para o outro lado. Mas a forma como eles são dispostos segue a seguinte ordem:
 
+- `scenes/boneco_1.xml` (normal)
+- `scenes/boneco_2.xml` (sorrindo acenando para um lado)
+- `scenes/boneco_3.xml` (sorrindo acenando pro outro lado)
+- `scenes/boneco_2.xml`
+- `scenes/boneco_3.xml`
+
+Tá, mas como esses 3 "estados" viram aquela pequena animação? Bom através de um script de `Bash`😎. Se você usa **Linux** você muito possivelmente já escutou esse nome, pois se trata do **shell** que é usado no **kernel**! Ou seja, o responsável por interpretar e executar os comandos que você digita. E algo mais legal ainda sobre isso é que o **Bash** proporciona basicamente uma linguagem na qual podemos fazer scripting! Então temos: Variáveis, IFs, Loops, Listas, além de todos os comandos já disponíveis para usar.
+
+Certo, mas indo direto ao ponto, o script usado para gerar aquela animação foi esse aqui:
+
+```bash
+#!/bin/bash
+
+mkdir -p frames
+
+cycles=2
+
+scenes=(
+    "scenes/boneco_1.xml"
+    "scenes/boneco_2.xml"
+    "scenes/boneco_3.xml"
+    "scenes/boneco_2.xml"
+    "scenes/boneco_3.xml"
+)
+
+frame_count=0
+
+for ((i=0; i<cycles; i++)); do
+    for ((j=0; j<${#scenes[@]}; j++)); do
+        ./build/PEinT "${scenes[$j]}"
+        mv boneco.png "frames/frame_$(printf "%03d" "$frame_count").png"
+        ((frame_count++))
+    done
+done
+
+frame_rate=3
+
+ffmpeg -framerate $frame_rate \
+    -i frames/frame_%03d.png \
+    -filter_complex "split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" \
+    output.gif
+```
+
+Para utiliza-lo vocês precisarão baixar o **FFmpeg**.
+```bash
+sudo apt install ffmpeg
+```
+
+E dar permissão para que esse script seja executável.
+```bash
+chmod +x script.sh
+```
+
+## Agora é com vocês!
+
+Não se esqueçam de [**avaliar**](https://forms.gle/LRTigAKq2RJa3VsE7) o curso! Nos ajuda demais e é uma pesquisa de satisfação rápida e anônima, então não tem desculpa para não responder 😉.
