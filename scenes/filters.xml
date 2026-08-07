@@ -1,0 +1,17 @@
+<PEinT>
+
+  <canvas filename="filters.png" size="800 400" />
+
+  <!-- grupo de cima: sera borrado -->
+  <polygon points="180 50 241 85 241 155 180 190 119 155 119 85" fill="230 170 40"/>
+  <circle radius="55" center="400 120" fill="80 160 220"/>
+  <ellipse radii="80 45" center="620 120" fill="200 90 160"/>
+
+  <!-- borra tudo acima -->
+  <average kernel="7"/>
+
+  <!-- grupo de baixo: desenhado depois => nitido -->
+  <circle radius="55" center="180 290" fill="80 160 220"/>
+  <polygon points="400 225 456 322 344 322" fill="230 170 40"/>
+  <ellipse radii="80 45" center="620 290" fill="200 90 160"/>
+</PEinT>

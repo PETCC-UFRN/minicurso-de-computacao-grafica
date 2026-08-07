@@ -1,0 +1,12 @@
+<PEinT>
+
+  <canvas filename="br_flag.png" size="800 400" background="0 255 0"/>
+
+  <polygon points="100 100 300 100 300 300 100 300" fill="255 255 0"/>
+  <rotate deg="45"/>
+  <translate by="200 0"/>
+
+  <circle radius="80" center="380 200" fill="0 0 255"/>
+
+</PEinT>
+

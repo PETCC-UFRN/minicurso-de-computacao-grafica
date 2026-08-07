@@ -1,0 +1,6 @@
+<PEinT>
+  <canvas filename="line.png" size="800 400" />
+  <!-- 4 figuras + fill + as 3 transformacoes + filtro, tudo aqui -->
+  <line start="0 0" end="800 400" thickness="30"/>
+
+</PEinT>

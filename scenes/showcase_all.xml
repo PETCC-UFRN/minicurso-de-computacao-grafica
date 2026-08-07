@@ -1,0 +1,17 @@
+<PEinT>
+  <canvas filename="showcase_all.png" size="800 400" />
+  <!-- 4 figuras + fill + as 3 transformacoes + filtro, tudo aqui -->
+  <line start="40 360" end="760 360" />
+
+  <circle radius="55" center="0 0"/>
+  <translate by="150 175"/>
+
+  <ellipse radii="60 60" center="400 175" fill="90 200 120"/>
+  <scale by="1.7 0.8"/>
+
+  <polygon points="650 80 674 143 740 146 688 187 706 252 650 215 594 252 612 187 560 146 626 143" fill="255 200 0"/>
+  <rotate deg="18"/>
+
+  <median  kernel="3"/>
+  <average kernel="3"/>
+</PEinT>

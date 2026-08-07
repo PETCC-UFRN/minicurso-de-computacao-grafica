@@ -1,0 +1,38 @@
+<PEinT>
+  <canvas filename="boneco.png" size="800 400" />
+
+  <!-- cabeca -->
+  <circle radius="80" center="400 150" fill="255 255 0"/>
+
+  <!-- olho -->
+  <circle radius="30" center="400 150" fill="255 255 255" />
+  <translate by="-40 0"/>
+
+  <circle radius="15" center="360 150" fill="0 0 0" />
+
+  <!-- olho -->
+  <circle radius="30" center="400 150" fill="255 255 255"/>
+  <translate by="40 0"/>
+
+  <circle radius="15" center="440 150" fill="0 0 0" />
+
+  <!-- boca -->
+  <polygon points="340 190 460 190 440 210 420 220 400 220 380 220 360 210" fill="120 0 0" />
+  <polygon points="340 190 460 190 450 200 350 200" fill="255 255 255" />
+  <polygon points="420 220 410 210 390 210 380 220" fill="255 0 0" />
+
+  <!-- corpo -->
+  <line start="400 230" end="400 400" thickness="3" />
+
+  <line start="397 280" end="385 380" thickness="3" />
+  <polyline points="403 280 500 190 530 70" thickness="4" />
+
+  <!-- <ellipse radii="60 60" center="400 175" fill="90 200 120"/> -->
+  <!-- <scale by="1.7 0.8"/> -->
+  <!---->
+  <!-- <polygon points="650 80 674 143 740 146 688 187 706 252 650 215 594 252 612 187 560 146 626 143" fill="255 200 0"/> -->
+  <!-- <rotate deg="18"/> -->
+  <!---->
+  <!-- <median  kernel="3"/> -->
+  <!-- <average kernel="3"/> -->
+</PEinT>
